@@ -32,7 +32,7 @@ jobs:
           mv templates/* ~/.local/share/godot/export_templates
       - name: Import
         run: |
-          godot --headless --verbose --editor --quit
+          ./godot --headless --verbose --editor --quit
       - name: Cache
         uses: actions/cache@v2
         with:
@@ -81,7 +81,7 @@ jobs:
       - name: Export
         run: |
           mkdir -v -p build/${{ matrix.dir }}
-          godot --headless --verbose --export-release '${{ matrix.target }}' build/${{ matrix.dir }}/${{ matrix.file }}.${{ matrix.ext }}
+          ./godot --headless --verbose --export-release '${{ matrix.target }}' build/${{ matrix.dir }}/${{ matrix.file }}.${{ matrix.ext }}
       - name: Upload Web
         if: matrix.target == 'Web'
         uses: actions/upload-pages-artifact@v3

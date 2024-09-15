@@ -20,8 +20,11 @@ jobs:
           submodules: true
       - name: Export
         run: |
+          ls
           mkdir -v -p build/web
+          ls
           godot --headless --verbose --editor --quit
+          ls
           godot --headless --verbose --export-release "Web" build/web/index.html
       - name: Upload
         uses: actions/upload-artifact@v3

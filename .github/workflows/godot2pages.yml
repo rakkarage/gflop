@@ -20,7 +20,7 @@ jobs:
           submodules: true
       - name: Download Godot
         run: |
-          curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}-stable_linux_x86_64.64.zip
+          curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
           unzip -q godot.zip
           mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 godot
           chmod +x godot

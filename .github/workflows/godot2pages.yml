@@ -30,14 +30,8 @@ jobs:
         run: |
           mkdir -v -p build/web
           godot --headless --verbose --export-release "Web" build/web/index.html
-      - name: Permissions
-        run: |
-          ls -la build/web
-          chmod -c -R +rX build/web
-          ls -la build/web
-          du -sh build/web
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
           name: github-pages
           path: build/web
@@ -52,8 +46,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: github-pages
-    #   - name: Setup
-    #     uses: actions/configure-pages@v5
+      - name: Configure
+        uses: actions/configure-pages@v5
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

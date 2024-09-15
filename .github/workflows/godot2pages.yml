@@ -38,7 +38,7 @@ jobs:
             ~/.local/share/godot/export_templates
           key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
           restore-keys: |
-            ${{ runner.os }}-godot-
+            ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
   build:
     needs: setup
     runs-on: ubuntu-latest
@@ -72,7 +72,7 @@ jobs:
             ~/.local/share/godot/export_templates
           key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
           restore-keys: |
-            ${{ runner.os }}-godot-
+            ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
       - name: Import
         run: |
           ./godot --headless --verbose --editor --quit

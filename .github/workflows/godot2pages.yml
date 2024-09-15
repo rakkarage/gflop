@@ -17,24 +17,24 @@ jobs:
     container:
       image: 'barichello/godot-ci:4.3'
     strategy:
-        matrix:
-            include:
-                - channel: windows
-                  type: 'Windows Desktop'
-                  file: $FILE_NAME
-                  ext: exe
-                - channel: linux
-                  type: Linux
-                  file: $FILE_NAME
-                  ext: x86_64
-                - channel: mac
-                  type: macOS
-                  file: $FILE_NAME
-                  ext: zip
-                - channel: web
-                  type: Web
-                  file: index
-                  ext: html
+      matrix:
+        include:
+          - channel: windows
+            type: Windows Desktop
+            file: $FILE_NAME
+            ext: exe
+          - channel: linux
+            type: Linux
+            file: $FILE_NAME
+            ext: x86_64
+          - channel: mac
+            type: macOS
+            file: $FILE_NAME
+            ext: zip
+          - channel: web
+            type: Web
+            file: index
+            ext: html
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,13 +56,13 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           name: github-pages
-          path: build/${{ matrix.channel }}
-      - name: Upload Windows
+          path: 'build/${{ matrix.channel }}'
+      - name: Upload Not Web
         if: matrix.channel != 'web'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.channel }}
-          path: build/${{ matrix.channel }}
+          name: '${{ matrix.channel }}'
+          path: 'build/${{ matrix.channel }}'
   deploy:
     needs: build
     runs-on: ubuntu-latest

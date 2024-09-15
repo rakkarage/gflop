@@ -32,7 +32,9 @@ jobs:
           godot --headless --verbose --export-release "Web" build/web/index.html
       - name: Permissions
         run: |
-          chmod -R a+rX build/web
+          ls -la build/web
+          chmod -c -R +rX build/web
+          ls -la build/web
       - name: Upload
         uses: actions/upload-artifact@v4
         with:

@@ -1,0 +1,53 @@
+[gd_scene load_steps=9 format=3 uid="uid://bbrvq56v4hc0v"]
+
+[ext_resource type="Script" path="res://CoverFlow.gd" id="1_h30rm"]
+[ext_resource type="Script" path="res://QuadTilt.gd" id="2_akk6a"]
+[ext_resource type="PackedScene" uid="uid://b75b8kuhmi2r" path="res://Child.tscn" id="2_p48yj"]
+[ext_resource type="PackedScene" uid="uid://cuxe0ccf2jtxo" path="res://CoverFlowInterface.tscn" id="3_ihb8t"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_glf76"]
+size = Vector2(2, 1.236)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_gaj7f"]
+viewport_path = NodePath("Mask/SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cy4dd"]
+resource_local_to_scene = true
+transparency = 1
+albedo_texture = SubResource("ViewportTexture_gaj7f")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ieo0t"]
+size = Vector3(2, 1.236, 0.001)
+
+[node name="CoverFlow" type="Node3D"]
+script = ExtResource("1_h30rm")
+_child_scene = ExtResource("2_p48yj")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="RayCast3D" type="RayCast3D" parent="Camera3D"]
+target_position = Vector3(0, 0, -2)
+collide_with_areas = true
+
+[node name="Mask" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_glf76")
+surface_material_override/0 = SubResource("StandardMaterial3D_cy4dd")
+script = ExtResource("2_akk6a")
+
+[node name="SubViewport" type="SubViewport" parent="Mask"]
+transparent_bg = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(512, 316)
+
+[node name="Interface" parent="Mask/SubViewport" instance=ExtResource("3_ihb8t")]
+
+[node name="Area3D" type="Area3D" parent="Mask"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mask/Area3D"]
+shape = SubResource("BoxShape3D_ieo0t")
+
+[node name="Children" type="Node3D" parent="Mask"]

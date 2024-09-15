@@ -1,0 +1,60 @@
+[gd_scene load_steps=2 format=3 uid="uid://dv354bd7r3aea"]
+
+[ext_resource type="StyleBox" uid="uid://dr3uqk85tasgn" path="res://Interface/Style/Stone.tres" id="1_jugt8"]
+
+[node name="Masked" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_jugt8")
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+
+[node name="HBoxTop" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="Before" type="Control" parent="Panel/Margin/VBox/HBoxTop"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Top" type="Button" parent="Panel/Margin/VBox/HBoxTop"]
+layout_mode = 2
+text = "Top"
+
+[node name="After" type="Control" parent="Panel/Margin/VBox/HBoxTop"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Control" type="Control" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxBottom" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="Before" type="Control" parent="Panel/Margin/VBox/HBoxBottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Bottom" type="Button" parent="Panel/Margin/VBox/HBoxBottom"]
+layout_mode = 2
+text = "Bottom"
+
+[node name="After" type="Control" parent="Panel/Margin/VBox/HBoxBottom"]
+layout_mode = 2
+size_flags_horizontal = 3

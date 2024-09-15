@@ -1,0 +1,41 @@
+[gd_scene load_steps=8 format=3 uid="uid://b75b8kuhmi2r"]
+
+[ext_resource type="Shader" path="res://QuadMask.gdshader" id="1_oid0q"]
+[ext_resource type="Script" path="res://QuadFace.gd" id="2_vseik"]
+[ext_resource type="PackedScene" uid="uid://dv354bd7r3aea" path="res://ChildInterface.tscn" id="3_hdntu"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_phyhs"]
+size = Vector2(0.5, 0.5)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_xcd3g"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0eajx"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_oid0q")
+shader_parameter/mask_transform = Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+shader_parameter/mask_size = Vector2(2, 1)
+shader_parameter/texture = SubResource("ViewportTexture_xcd3g")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fob41"]
+size = Vector3(0.5, 0.5, 0.001)
+
+[node name="Child" type="MeshInstance3D"]
+mesh = SubResource("QuadMesh_phyhs")
+surface_material_override/0 = SubResource("ShaderMaterial_0eajx")
+script = ExtResource("2_vseik")
+_use_input_mask = true
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(128, 128)
+
+[node name="Interface" parent="SubViewport" instance=ExtResource("3_hdntu")]
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_fob41")

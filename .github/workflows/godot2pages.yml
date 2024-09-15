@@ -31,7 +31,7 @@ jobs:
           mkdir -v -p build/web
           godot --headless --verbose --export-release "Web" build/web/index.html
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v1
         with:
           name: github-pages
           path: build/web
@@ -46,6 +46,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: github-pages
+      - name: Test
+        run: |
+          ls
       - name: Setup
         uses: actions/configure-pages@v5
       - name: Deploy

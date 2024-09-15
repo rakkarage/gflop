@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: Windows Desktop
+          - name: 'Windows Desktop'
             dir: windows
             file: $FILE_NAME
             ext: exe

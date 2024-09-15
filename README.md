@@ -16,3 +16,7 @@ Recreating this Unity3D Cover Flow in Godot.
 
 - `git clone --recurse-submodules http://github.com/rakkarage/test-cover-flow`
 - Or `git submodule init` and `git submodule update`.
+
+## Hosted and running at
+
+<https://rakkarage.github.io/gflop/>

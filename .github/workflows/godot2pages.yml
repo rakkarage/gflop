@@ -8,11 +8,33 @@ permissions:
   contents: read
   pages: write
   id-token: write
+env:
+  GODOT_VERSION: 4.1
+  FILE_NAME: PixelEffect
 jobs:
   build:
     runs-on: ubuntu-latest
     container:
       image: 'barichello/godot-ci:4.3'
+    strategy:
+        matrix:
+            include:
+                - channel: windows
+                  type: 'Windows Desktop'
+                  file: $FILE_NAME
+                  ext: exe
+                - channel: linux
+                  type: Linux
+                  file: $FILE_NAME
+                  ext: x86_64
+                - channel: mac
+                  type: macOS
+                  file: $FILE_NAME
+                  ext: zip
+                - channel: web
+                  type: Web
+                  file: index
+                  ext: html
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,20 +43,26 @@ jobs:
       - name: Templates
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates
-          mv /root/.local/share/godot/export_templates/4.3.stable ~/.local/share/godot/export_templates/4.3.stable
+          mv /root/.local/share/godot/export_templates/${{env.GODOT_VERSION}}.stable ~/.local/share/godot/export_templates/${{env.GODOT_VERSION}}.stable
       - name: Import
         run: |
-          mkdir -v -p build/web
           godot --headless --verbose --editor --quit
       - name: Export
         run: |
-          mkdir -v -p build/web
-          godot --headless --verbose --export-release "Web" build/web/index.html
-      - name: Upload
+          mkdir -v -p build/${{ matrix.channel }}
+          godot --headless --verbose --export-release '${{matrix.type}}' build/${{matrix.channel}}/${{matrix.file}}.${{matrix.ext}}
+      - name: Upload Web
+        if: matrix.channel == 'web'
         uses: actions/upload-pages-artifact@v3
         with:
           name: github-pages
-          path: build/web
+          path: build/${{ matrix.channel }}
+      - name: Upload Windows
+        if: matrix.channel != 'web'
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.channel }}
+          path: build/${{ matrix.channel }}
   deploy:
     needs: build
     runs-on: ubuntu-latest

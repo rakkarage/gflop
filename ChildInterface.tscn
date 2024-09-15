@@ -2,7 +2,7 @@
 
 [ext_resource type="StyleBox" uid="uid://dr3uqk85tasgn" path="res://Interface/Style/Stone.tres" id="1_4pvb5"]
 
-[node name="Masked" type="Control"]
+[node name="Interface" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

@@ -142,7 +142,6 @@ func _drag_to(value: int) -> void:
 	_drag_to_float(value * -OFFSET_X)
 
 func _drag_to_float(value: float) -> void:
-	print("drag_to_float", value)
 	_current = value
 	for i in range(_mask_children.get_child_count()):
 		_set_child_position(_mask_children.get_child(i), i, _current)

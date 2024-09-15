@@ -52,13 +52,13 @@ jobs:
           mkdir -v -p build/${{ matrix.dir }}
           godot --headless --verbose --export-release '${{ matrix.target }}' build/${{ matrix.dir }}/${{ matrix.file }}.${{ matrix.ext }}
       - name: Upload Web
-        if: ${{ matrix.target }} == Web
+        if: ${{ matrix.target }} == 'Web'
         uses: actions/upload-pages-artifact@v3
         with:
           name: github-pages
           path: 'build/${{ matrix.dir }}'
       - name: Upload Not Web
-        if: ${{ matrix.target }} != Web
+        if: ${{ matrix.target }} != 'Web'
         uses: actions/upload-artifact@v4
         with:
           name: '${{ matrix.dir }}'

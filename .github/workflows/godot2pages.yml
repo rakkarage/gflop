@@ -43,14 +43,14 @@ jobs:
       - name: Templates
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates
-          mv /root/.local/share/godot/export_templates/${{env.GODOT_VERSION}}.stable ~/.local/share/godot/export_templates/${{env.GODOT_VERSION}}.stable
+          mv /root/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
       - name: Import
         run: |
           godot --headless --verbose --editor --quit
       - name: Export
         run: |
           mkdir -v -p build/${{ matrix.channel }}
-          godot --headless --verbose --export-release '${{matrix.type}}' build/${{matrix.channel}}/${{matrix.file}}.${{matrix.ext}}
+          godot --headless --verbose --export-release '${{ matrix.type }}' build/${{ matrix.channel }}/${{ matrix.file }}.${{ matrix.ext }}
       - name: Upload Web
         if: matrix.channel == 'web'
         uses: actions/upload-pages-artifact@v3

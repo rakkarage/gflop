@@ -23,15 +23,15 @@ jobs:
             dir: windows
             file: $FILE_NAME
             ext: exe
-          - name: Linux
+          - name: 'Linux'
             dir: linux
             file: $FILE_NAME
             ext: x86_64
-          - name: macOS
+          - name: 'macOS'
             dir: mac
             file: $FILE_NAME
             ext: zip
-          - name: Web
+          - name: 'Web'
             dir: web
             file: index
             ext: html

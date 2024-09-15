@@ -16,10 +16,16 @@ extends Node3D
 		_child_scene = value
 		update_configuration_warnings()
 
-const _ray_length := 100.0
-const _offset_x := 0.22
-const _offset_z := 0.333
-const _offset_depth := 0.0333
+const RAY_LENGTH := 100.0
+const OFFSET_X := 0.22
+const OFFSET_Z := 0.333
+const OFFSET_DEPTH := 0.0333
+
+var _dragging := false
+var _drag_velocity := 0.0
+var _last_mouse_position := Vector2()
+var _momentum := 0.0
+var _friction := 0.95
 
 func _ready() -> void:
 	_mask_back.pressed.connect(_on_back_pressed)
@@ -35,6 +41,35 @@ func _process(_delta: float) -> void:
 		if mat:
 			mat.set_shader_parameter("mask_transform", _mask.global_transform)
 			mat.set_shader_parameter("mask_size", _mask.mesh.size)
+	if not _dragging and abs(_momentum) > 0.01:
+		_scroll_bar.value += _momentum * _delta
+		_momentum *= _friction
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				_dragging = true
+				_last_mouse_position = event.position
+				_momentum = 0.0
+			else:
+				_dragging = false
+				_momentum = _drag_velocity
+	elif event is InputEventMouseMotion and _dragging:
+		var delta = event.position - _last_mouse_position
+		_drag_velocity = delta.x / get_viewport().size.x * _child_count
+		_scroll_bar.value -= _drag_velocity
+		_last_mouse_position = event.position
+	if event is InputEventMouseMotion:
+		for i in range(_mask_children.get_child_count()):
+			var child := _mask_children.get_child(i) as QuadFace
+			child._is_mouse_inside_mask = _is_mouse_inside_mask()
+
+# disables mouse input when the mouse is outside the mask, so only the visible parts of controls are interactive
+func _is_mouse_inside_mask() -> bool:
+	_ray.target_position = _ray.global_position + _camera.project_ray_normal(_camera.get_viewport().get_mouse_position()) * RAY_LENGTH
+	_ray.force_raycast_update()
+	return _ray.is_colliding() and _ray.get_collider() == _mask_area
 
 func _generate_children() -> void:
 	if _child_scene == null:
@@ -53,7 +88,7 @@ func _scroll_children(value: float) -> void:
 		_set_child_position(_mask_children.get_child(i), i, value)
 
 func _set_child_position(child: QuadFace, index: int, value: float) -> void:
-	child.global_position = Vector3((index - value) * _offset_x, 0, _offset_z + (-abs(index - value) * _offset_depth))
+	child.global_position = Vector3((index - value) * OFFSET_X, 0, OFFSET_Z + (-abs(index - value) * OFFSET_DEPTH))
 
 func _update_scroll_bar() -> void:
 	_scroll_bar.max_value = _child_count
@@ -75,17 +110,6 @@ func _on_Top_pressed() -> void:
 
 func _on_Bottom_pressed() -> void:
 	print("Bottom")
-
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
-		for i in range(_mask_children.get_child_count()):
-			var child := _mask_children.get_child(i) as QuadFace
-			child._is_mouse_inside_mask = _is_mouse_inside_mask()
-
-func _is_mouse_inside_mask() -> bool:
-	_ray.target_position = _ray.global_position + _camera.project_ray_normal(_camera.get_viewport().get_mouse_position()) * _ray_length
-	_ray.force_raycast_update()
-	return _ray.is_colliding() and _ray.get_collider() == _mask_area
 
 func _get_configuration_warnings() -> PackedStringArray:
 	if _child_scene == null:

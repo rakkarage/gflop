@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bvpjfiua3xq7c" path="res://Interface/Sprite/ArrowWest.png" id="2_mrgs8"]
 [ext_resource type="Texture2D" uid="uid://j10cct6ej7qe" path="res://Interface/Sprite/ArrowEast.png" id="3_ys1uy"]
 
-[node name="CoverFlowInterface" type="Control"]
+[node name="Interface" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

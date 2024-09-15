@@ -1,47 +1,46 @@
 name: Godot to GitHub Pages
-
 on:
   workflow_dispatch:
-
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:4.3
+      image: 'barichello/godot-ci:4.3'
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
           submodules: true
-      - name: export
+      - name: Export
         run: |
-          mkdir -v -p ~/.local/share/godot/templates
-          mv /root/.local/share/godot/templates/4.3.stable ~/.local/share/godot/templates/4.3.stable
-          mkdir -v -p ./build/web
-          godot -v --export "Web" ./build/web/index.html
-
+          mkdir -v -p build/web
+          godot --headless --verbose --export-release "HTML5" build/web/index.html
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: web
+          path: ./build/web
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: '${{ steps.deployment.outputs.page_url }}'
     steps:
-      - name: Download artifact
+      - name: Download
         uses: actions/download-artifact@v3
         with:
           name: web
           path: ./build/web
-      - name: Setup Pages
+      - name: Setup
         uses: actions/configure-pages@v2
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v1

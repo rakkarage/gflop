@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://cuxe0ccf2jtxo"]
+[gd_scene format=3 uid="uid://cuxe0ccf2jtxo"]
 
 [node name="Mask" type="Control"]
 layout_mode = 3
@@ -18,6 +18,10 @@ grow_vertical = 2
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
 layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
 [node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
 layout_mode = 2

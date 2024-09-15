@@ -8,14 +8,14 @@ permissions:
   contents: read
   pages: write
   id-token: write
-env:
-  GODOT_VERSION: 4.3
-  FILE_NAME: gflop
 jobs:
   build:
     runs-on: ubuntu-latest
     container:
       image: 'barichello/godot-ci:4.3'
+    env:
+      GODOT_VERSION: 4.3
+      FILE_NAME: gflop
     strategy:
       matrix:
         include:

@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            godot
+            ./godot
             ~/.local/share/godot/export_templates
           key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
           restore-keys: |
@@ -68,7 +68,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            godot
+            ./godot
             ~/.local/share/godot/export_templates
           key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
           restore-keys: |

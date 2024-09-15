@@ -9,7 +9,7 @@ permissions:
   pages: write
   id-token: write
 env:
-  GODOT_VERSION: 4.1
+  GODOT_VERSION: 4.3
   FILE_NAME: PixelEffect
 jobs:
   build:

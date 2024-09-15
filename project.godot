@@ -11,11 +11,16 @@ config_version=5
 [application]
 
 config/name="gflop"
-run/main_scene="res://CoverFlow.tscn"
+run/main_scene="res://Demo.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 boot_splash/image="res://Intro/Henry.png"
 boot_splash/fullsize=false
 config/icon="res://icon.png"
+
+[gui]
+
+theme/custom="res://Interface/Theme.tres"
+theme/custom_font="res://Interface/Font/SuperWhite.fnt"
 
 [rendering]
 

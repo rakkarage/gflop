@@ -21,6 +21,7 @@ jobs:
       - name: Export
         run: |
           mkdir -v -p build/web
+          godot --headless --verbose --editor --quit
           godot --headless --verbose --export-release "Web" build/web/index.html
       - name: Upload
         uses: actions/upload-artifact@v3

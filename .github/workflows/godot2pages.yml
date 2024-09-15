@@ -59,7 +59,7 @@ jobs:
           path: build/${{ matrix.channel }}
       - name: Upload Windows
         if: matrix.channel != 'web'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.channel }}
           path: build/${{ matrix.channel }}

@@ -30,8 +30,7 @@ func _ready() -> void:
 	_on_scroll_bar_value_changed(0)
 
 func _process(_delta: float) -> void:
-	for i in range(_mask_children.get_child_count()):
-		var child := _mask_children.get_child(i)
+	for child in _mask_children.get_children():
 		var mat: ShaderMaterial = child.get_surface_override_material(0)
 		if mat:
 			mat.set_shader_parameter("mask_transform", _mask.global_transform)
@@ -45,16 +44,16 @@ func _generate_children() -> void:
 		var child := _child_scene.instantiate() as QuadFace
 		_mask_children.add_child(child)
 		child._look_at_target = _camera.global_transform.origin
-		child.global_transform.origin = Vector3(i * _offset_x, 0, _offset_z)
+		_set_child_position(child, i, _scroll_bar.value)
 		child.get_node("SubViewport/Interface/Panel/Margin/VBox/HBoxTop/Top").pressed.connect(_on_Top_pressed)
 		child.get_node("SubViewport/Interface/Panel/Margin/VBox/HBoxBottom/Bottom").pressed.connect(_on_Bottom_pressed)
 
 func _scroll_children(value: float) -> void:
 	for i in range(_mask_children.get_child_count()):
-		var child := _mask_children.get_child(i)
-		var distance_from_center = abs(i - value)
-		var new_position = Vector3((i - value) * _offset_x, 0, _offset_z + (-distance_from_center * _offset_depth))
-		child.global_transform.origin = new_position
+		_set_child_position(_mask_children.get_child(i), i, value)
+
+func _set_child_position(child: QuadFace, index: int, value: float) -> void:
+	child.global_transform.origin = Vector3((index - value) * _offset_x, 0, _offset_z + (-abs(index - value) * _offset_depth))
 
 func _update_scroll_bar() -> void:
 	_scroll_bar.max_value = _child_count

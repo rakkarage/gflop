@@ -43,7 +43,7 @@ func _generate_children() -> void:
 	for i in range(_child_count):
 		var child := _child_scene.instantiate() as QuadFace
 		_mask_children.add_child(child)
-		child._look_at_target = _camera.global_transform.origin
+		child._look_at_target = _camera.global_position
 		_set_child_position(child, i, _scroll_bar.value)
 		child.get_node("SubViewport/Interface/Panel/Margin/VBox/HBoxTop/Top").pressed.connect(_on_Top_pressed)
 		child.get_node("SubViewport/Interface/Panel/Margin/VBox/HBoxBottom/Bottom").pressed.connect(_on_Bottom_pressed)
@@ -53,7 +53,7 @@ func _scroll_children(value: float) -> void:
 		_set_child_position(_mask_children.get_child(i), i, value)
 
 func _set_child_position(child: QuadFace, index: int, value: float) -> void:
-	child.global_transform.origin = Vector3((index - value) * _offset_x, 0, _offset_z + (-abs(index - value) * _offset_depth))
+	child.global_position = Vector3((index - value) * _offset_x, 0, _offset_z + (-abs(index - value) * _offset_depth))
 
 func _update_scroll_bar() -> void:
 	_scroll_bar.max_value = _child_count
@@ -83,7 +83,7 @@ func _input(event: InputEvent) -> void:
 			child._is_mouse_inside_mask = _is_mouse_inside_mask()
 
 func _is_mouse_inside_mask() -> bool:
-	_ray.target_position = _ray.global_transform.origin + _camera.project_ray_normal(_camera.get_viewport().get_mouse_position()) * _ray_length
+	_ray.target_position = _ray.global_position + _camera.project_ray_normal(_camera.get_viewport().get_mouse_position()) * _ray_length
 	_ray.force_raycast_update()
 	return _ray.is_colliding() and _ray.get_collider() == _mask_area
 

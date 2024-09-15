@@ -21,6 +21,10 @@ const OFFSET_X := 0.22
 const OFFSET_Z := 0.333
 const OFFSET_DEPTH := 0.0333
 
+const TWEEN_TIME := 0.333
+
+# TODO: can use value instead of _current?
+var _current := 0.0
 var _dragging := false
 var _drag_velocity := 0.0
 var _last_mouse_position := Vector2()
@@ -41,7 +45,7 @@ func _process(_delta: float) -> void:
 		if mat:
 			mat.set_shader_parameter("mask_transform", _mask.global_transform)
 			mat.set_shader_parameter("mask_size", _mask.mesh.size)
-	if not _dragging and abs(_momentum) > 0.01:
+	if not _dragging and abs(_momentum) > 0.001:
 		_scroll_bar.value += _momentum * _delta
 		_momentum *= _friction
 
@@ -55,15 +59,17 @@ func _input(event: InputEvent) -> void:
 			else:
 				_dragging = false
 				_momentum = _drag_velocity
-	elif event is InputEventMouseMotion and _dragging:
-		var delta = event.position - _last_mouse_position
-		_drag_velocity = delta.x / get_viewport().size.x * _child_count
-		_scroll_bar.value -= _drag_velocity
-		_last_mouse_position = event.position
-	if event is InputEventMouseMotion:
-		for i in range(_mask_children.get_child_count()):
-			var child := _mask_children.get_child(i) as QuadFace
-			child._is_mouse_inside_mask = _is_mouse_inside_mask()
+	elif event is InputEventMouseMotion:
+		if _dragging:
+			var delta = event.position - _last_mouse_position
+			_drag_velocity = delta.x / get_viewport().size.x * _child_count
+			_scroll_bar.set_value_no_signal(_scroll_bar.value - _drag_velocity)
+			_drag_to_float(_scroll_bar.value)
+			_last_mouse_position = event.position
+		else:
+			for i in range(_mask_children.get_child_count()):
+				var child := _mask_children.get_child(i) as QuadFace
+				child._is_mouse_inside_mask = _is_mouse_inside_mask()
 
 # disables mouse input when the mouse is outside the mask, so only the visible parts of controls are interactive
 func _is_mouse_inside_mask() -> bool:
@@ -83,27 +89,28 @@ func _generate_children() -> void:
 		child.get_node("SubViewport/Interface/Panel/Margin/VBox/HBoxTop/Top").pressed.connect(_on_Top_pressed)
 		child.get_node("SubViewport/Interface/Panel/Margin/VBox/HBoxBottom/Bottom").pressed.connect(_on_Bottom_pressed)
 
-func _scroll_children(value: float) -> void:
-	for i in range(_mask_children.get_child_count()):
-		_set_child_position(_mask_children.get_child(i), i, value)
+func _get_child_position(index: int, value: float) -> Vector3:
+	return Vector3((index - value) * OFFSET_X, 0, OFFSET_Z + (-abs(index - value) * OFFSET_DEPTH))
 
 func _set_child_position(child: QuadFace, index: int, value: float) -> void:
-	child.global_position = Vector3((index - value) * OFFSET_X, 0, OFFSET_Z + (-abs(index - value) * OFFSET_DEPTH))
+	child.global_position = _get_child_position(index, value)
 
 func _update_scroll_bar() -> void:
 	_scroll_bar.max_value = _child_count
 	_scroll_bar.page = 1
 
 func _on_scroll_bar_value_changed(value: float) -> void:
-	_scroll_children(value)
+	_drag_to_float(value)
 	_mask_back.disabled = value == 0
 	_mask_fore.disabled = value >= _scroll_bar.max_value - 1
 
 func _on_back_pressed() -> void:
-	_scroll_bar.value = max(0, _scroll_bar.value - 1)
+	_ease_to(_get_current() - 1)
+	# _scroll_bar.value = max(0, _scroll_bar.value - 1)
 
 func _on_fore_pressed() -> void:
-	_scroll_bar.value = min(_scroll_bar.max_value, _scroll_bar.value + 1)
+	_ease_to(_get_current() + 1)
+	# _scroll_bar.value = min(_scroll_bar.max_value, _scroll_bar.value + 1)
 
 func _on_Top_pressed() -> void:
 	print("Top")
@@ -116,3 +123,26 @@ func _get_configuration_warnings() -> PackedStringArray:
 		return ["No child scene to instantiate."]
 	else:
 		return []
+
+func _get_current() -> int:
+	return int(-_current / OFFSET_X)
+
+func _ease_to(target: int) -> void:
+	var tween := create_tween()
+	tween.set_ease(Tween.EASE_OUT)
+	tween.set_trans(Tween.TRANS_SPRING)
+	# tween.tween_property(self, "_current", target * -OFFSET_X, TWEEN_TIME)
+	# this should tween drag_to_float instead of _current
+	tween.tween_method(_drag_to_float, _current, target * -OFFSET_X, TWEEN_TIME)
+
+func _ease_to_vector3(target: Vector3) -> void:
+	_ease_to(int(target.x))
+
+func _drag_to(value: int) -> void:
+	_drag_to_float(value * -OFFSET_X)
+
+func _drag_to_float(value: float) -> void:
+	print("drag_to_float", value)
+	_current = value
+	for i in range(_mask_children.get_child_count()):
+		_set_child_position(_mask_children.get_child(i), i, _current)

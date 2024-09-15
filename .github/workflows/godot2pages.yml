@@ -19,20 +19,20 @@ jobs:
     strategy:
       matrix:
         include:
-          - channel: windows
-            type: Windows Desktop
+          - name: Windows Desktop
+            dir: windows
             file: $FILE_NAME
             ext: exe
-          - channel: linux
-            type: Linux
+          - name: Linux
+            dir: linux
             file: $FILE_NAME
             ext: x86_64
-          - channel: mac
-            type: macOS
+          - name: macOS
+            dir: mac
             file: $FILE_NAME
             ext: zip
-          - channel: web
-            type: Web
+          - name: Web
+            dir: web
             file: index
             ext: html
     steps:
@@ -49,20 +49,20 @@ jobs:
           godot --headless --verbose --editor --quit
       - name: Export
         run: |
-          mkdir -v -p build/${{ matrix.channel }}
-          godot --headless --verbose --export-release '${{ matrix.type }}' build/${{ matrix.channel }}/${{ matrix.file }}.${{ matrix.ext }}
+          mkdir -v -p build/${{ matrix.dir }}
+          godot --headless --verbose --export-release '${{ matrix.name }}' build/${{ matrix.dir }}/${{ matrix.file }}.${{ matrix.ext }}
       - name: Upload Web
-        if: matrix.channel == 'web'
+        if: ${{ matrix.name }} == 'Web'
         uses: actions/upload-pages-artifact@v3
         with:
           name: github-pages
-          path: 'build/${{ matrix.channel }}'
+          path: 'build/${{ matrix.dir }}'
       - name: Upload Not Web
-        if: matrix.channel != 'web'
+        if: ${{ matrix.name }} != 'Web'
         uses: actions/upload-artifact@v4
         with:
-          name: '${{ matrix.channel }}'
-          path: 'build/${{ matrix.channel }}'
+          name: '${{ matrix.dir }}'
+          path: 'build/${{ matrix.dir }}'
   deploy:
     needs: build
     runs-on: ubuntu-latest

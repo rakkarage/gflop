@@ -10,7 +10,7 @@ permissions:
   id-token: write
 env:
   GODOT_VERSION: 4.3
-  FILE_NAME: PixelEffect
+  FILE_NAME: gflop
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -64,7 +64,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Restore Godot Setup
+      - name: Restore
         id: godot-cache
         uses: actions/cache/restore@v4
         with:
@@ -73,8 +73,7 @@ jobs:
             ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
           key: '${{ runner.os }}-Godot-${{ env.GODOT_VERSION }}'
       - name: Import
-        run: |
-          ./godot --headless --verbose --editor --quit
+        run: ./godot --headless --verbose --editor --quit
       - name: Export
         run: |
           mkdir -v -p build/${{ matrix.dir }}

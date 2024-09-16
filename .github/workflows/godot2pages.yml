@@ -28,14 +28,14 @@ jobs:
         run: |
           curl -L -o templates.zip https://downloads.tuxfamily.org/godotengine/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
           unzip -q templates.zip
-          mkdir -v -p ~/.local/share/godot/export_templates
-          mv templates/* ~/.local/share/godot/export_templates
+          mkdir -v -p ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+          mv templates/* ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
       - name: Cache
         uses: actions/cache@v2
         with:
           path: |
             ./godot
-            ~/.local/share/godot/export_templates
+            ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
           key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
           restore-keys: |
             ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
@@ -64,12 +64,16 @@ jobs:
             file: index
             ext: html
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Restore Godot Setup
         uses: actions/cache@v3
         with:
           path: |
             ./godot
-            ~/.local/share/godot/export_templates
+            ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
           key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
           restore-keys: |
             ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}

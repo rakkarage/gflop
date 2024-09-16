@@ -10,7 +10,7 @@ permissions:
   id-token: write
 env:
   GODOT_VERSION: 4.3
-  FILE_NAME: '${{ github.repository }}'
+  FILE_NAME: gflop
 jobs:
   setup:
     runs-on: ubuntu-latest

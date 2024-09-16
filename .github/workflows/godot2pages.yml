@@ -23,8 +23,6 @@ jobs:
             ./godot
             ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
           key: '${{ runner.os }}-godot-${{ env.GODOT_VERSION }}'
-          restore-keys: |
-            ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
       - name: Cache Godot
         if: steps.godot-cache.outputs.cache-hit != 'true'
         run: |
@@ -74,8 +72,6 @@ jobs:
             ./godot
             ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
           key: '${{ runner.os }}-godot-${{ env.GODOT_VERSION }}'
-          restore-keys: |
-            ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
       - name: Import
         run: |
           ./godot --headless --verbose --editor --quit

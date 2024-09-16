@@ -12,7 +12,7 @@ env:
   GODOT_VERSION: 4.3
   FILE_NAME: ${{ github.event.repository.name }}
 jobs:
-  setup:
+  setup: # cache godot and templates
     runs-on: ubuntu-latest
     steps:
       - name: Cache
@@ -37,7 +37,7 @@ jobs:
           unzip -q templates.zip
           mkdir -v -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-  build:
+  build: # build godot for 'all' platforms
     needs: setup
     runs-on: ubuntu-latest
     strategy:
@@ -90,7 +90,7 @@ jobs:
         with:
           name: '${{ matrix.dir }}'
           path: 'build/${{ matrix.dir }}'
-  clean:
+  clean: # delete old github pages deployments
     needs: build
     runs-on: ubuntu-latest
     permissions: write-all
@@ -101,7 +101,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           environment: github-pages
           onlyRemoveDeployments: true
-  deploy:
+  deploy: # deploy web artifact to github pages
     needs: clean
     runs-on: ubuntu-latest
     environment:

@@ -91,7 +91,6 @@ jobs:
           name: '${{ matrix.dir }}'
           path: 'build/${{ matrix.dir }}'
   clean: # delete old github pages deployments
-    needs: build
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -102,7 +101,7 @@ jobs:
           environment: github-pages
           onlyRemoveDeployments: true
   deploy: # deploy web artifact to github pages
-    needs: clean
+    needs: [clean, build]
     runs-on: ubuntu-latest
     environment:
       name: github-pages

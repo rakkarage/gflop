@@ -47,15 +47,15 @@ jobs:
         include:
           - target: 'Windows Desktop'
             dir: windows
-            file: $FILE_NAME
+            file: '${FILE_NAME}'
             ext: exe
           - target: Linux
             dir: linux
-            file: $FILE_NAME
+            file: '${FILE_NAME}'
             ext: x86_64
           - target: macOS
             dir: mac
-            file: $FILE_NAME
+            file: '${FILE_NAME'
             ext: zip
           - target: Web
             dir: web

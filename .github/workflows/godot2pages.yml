@@ -15,10 +15,6 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
       - name: Cache
         id: godot-cache
         uses: actions/cache@v4
@@ -29,14 +25,14 @@ jobs:
           key: '${{ runner.os }}-godot-${{ env.GODOT_VERSION }}'
           restore-keys: |
             ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
-      - name: Download Godot
+      - name: Cache Godot
         if: steps.godot-cache.outputs.cache-hit != 'true'
         run: |
           curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
           unzip -q godot.zip
           mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 godot
           chmod +x godot
-      - name: Download Godot Templates
+      - name: Cache Godot Templates
         if: steps.godot-cache.outputs.cache-hit != 'true'
         run: |
           curl -L -o templates.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz

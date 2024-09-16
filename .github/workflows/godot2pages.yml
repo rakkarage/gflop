@@ -10,7 +10,7 @@ permissions:
   id-token: write
 env:
   GODOT_VERSION: 4.3
-  FILE_NAME: gflop
+  FILE_NAME: ${{ github.event.repository.name }}
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -32,17 +32,17 @@ jobs:
       - name: Download Godot
         if: steps.godot-cache.outputs.cache-hit != 'true'
         run: |
-          curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/$GODOT_VERSION/Godot_v$GODOT_VERSION-stable_linux.x86_64.zip
+          curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
           unzip -q godot.zip
-          mv Godot_v$GODOT_VERSION-stable_linux.x86_64 godot
+          mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 godot
           chmod +x godot
       - name: Download Godot Templates
         if: steps.godot-cache.outputs.cache-hit != 'true'
         run: |
-          curl -L -o templates.zip https://downloads.tuxfamily.org/godotengine/$GODOT_VERSION/Godot_v$GODOT_VERSION-stable_export_templates.tpz
+          curl -L -o templates.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
           unzip -q templates.zip
-          mkdir -v -p ~/.local/share/godot/export_templates/$GODOT_VERSION.stable
-          mv templates/* ~/.local/share/godot/export_templates/$GODOT_VERSION.stable
+          mkdir -v -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
   build:
     needs: setup
     runs-on: ubuntu-latest

@@ -90,8 +90,19 @@ jobs:
         with:
           name: '${{ matrix.dir }}'
           path: 'build/${{ matrix.dir }}'
-  deploy:
+  clean:
     needs: build
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Delete
+        uses: strumwolf/delete-deployment-environment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: github-pages
+          onlyRemoveDeployments: true
+  deploy:
+    needs: clean
     runs-on: ubuntu-latest
     environment:
       name: github-pages

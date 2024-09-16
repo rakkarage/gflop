@@ -4,9 +4,11 @@
 <img align="right" src="icon.png" alt="Icon">
 <!-- markdownlint-enable MD033 -->
 
-Recreating this Unity3D Cover Flow in Godot.
+Recreating [this](https://github.com/rakkarage/FlopUnity) Unity3D Cover Flow in Godot.
 
-<https://github.com/rakkarage/FlopUnity>
+Can test WIP here: <https://rakkarage.github.io/gflop/>
+
+Thanks.
 
 ![Flop.gif](Flop.gif)
 
@@ -16,7 +18,3 @@ Recreating this Unity3D Cover Flow in Godot.
 
 - `git clone --recurse-submodules http://github.com/rakkarage/test-cover-flow`
 - Or `git submodule init` and `git submodule update`.
-
-## Hosted and running at
-
-<https://rakkarage.github.io/gflop/>

@@ -49,19 +49,19 @@ jobs:
       matrix:
         include:
           - target: Linux
-            dir: linux
+            dir: Linux
             file: $FILE_NAME
             ext: x86_64
           - target: macOS
-            dir: mac
+            dir: macOS
             file: $FILE_NAME
             ext: zip
           - target: Web
-            dir: web
+            dir: Web
             file: index
             ext: html
           - target: 'Windows Desktop'
-            dir: windows
+            dir: Windows
             file: $FILE_NAME
             ext: exe
     steps:

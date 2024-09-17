@@ -51,15 +51,15 @@ jobs:
           - target: Linux
             file: $FILE_NAME
             ext: x86_64
-          - target: macOS
-            file: $FILE_NAME
-            ext: zip
           - target: Web
             file: index
             ext: html
           - target: Windows
             file: $FILE_NAME
             ext: exe
+          - target: macOS
+            file: $FILE_NAME
+            ext: zip
     steps:
       - name: Checkout
         uses: actions/checkout@v4

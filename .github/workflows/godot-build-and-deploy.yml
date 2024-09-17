@@ -74,10 +74,25 @@ jobs:
           key: '${{ runner.os }}_Godot_${{ env.GODOT_VERSION }}'
       - name: Import
         run: ./godot --headless --verbose --editor --quit
+      - name: Check
+        id: check-42-linux-name
+        run: |
+          if grep -q "name=\"Linux/X11\"" export_presets.cfg; then
+            echo "preset=Linux/X11" >> $GITHUB_OUTPUT
+          elif grep -q "name=\"Linux\"" export_presets.cfg; then
+            echo "preset=Linux" >> $GITHUB_OUTPUT
+          else
+            echo "Error: Linux preset not found in export_presets.cfg"
+            exit 1
+          fi
       - name: Export
         run: |
           mkdir -v -p build/${{ matrix.target }}
-          ./godot --headless --verbose --export-release '${{ matrix.target }}' build/${{ matrix.target }}/${{ matrix.file }}.${{ matrix.ext }}
+          if [[ "${{ matrix.target }}" == "Linux" ]]; then
+            ./godot --headless --verbose --export-release '${{ steps.check-42-linux-name.outputs.preset }}' build/${{ matrix.target }}/${{ matrix.file }}.${{ matrix.ext }}
+          else
+            ./godot --headless --verbose --export-release '${{ matrix.target }}' build/${{ matrix.target }}/${{ matrix.file }}.${{ matrix.ext }}
+          fi
       - name: Upload Web
         if: matrix.target == 'Web'
         uses: actions/upload-pages-artifact@v3

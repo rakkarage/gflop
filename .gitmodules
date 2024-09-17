@@ -1,6 +1,6 @@
-[submodule "Interface"]
-	path = Interface
-	url = https://github.com/rakkarage/Interface
-[submodule "Intro"]
-	path = Intro
+[submodule "addons/Intro"]
+	path = addons/Intro
 	url = https://github.com/rakkarage/Intro
+[submodule "addons/Interface"]
+	path = addons/Interface
+	url = https://github.com/rakkarage/Interface

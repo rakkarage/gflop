@@ -21,22 +21,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache
-        id: godot-cache
+        id: godot_cache
         uses: actions/cache@v4
         with:
           path: |
             ./godot
             ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
-          key: '${{ runner.os }}-Godot-${{ env.GODOT_VERSION }}'
+          key: '${{ runner.os }}_Godot_${{ env.GODOT_VERSION }}'
       - name: Cache Godot
-        if: steps.godot-cache.outputs.cache-hit != 'true'
+        if: steps.godot_cache.outputs.cache-hit != 'true'
         run: |
           curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
           unzip -q godot.zip
           mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 godot
           chmod +x godot
       - name: Cache Godot Templates
-        if: steps.godot-cache.outputs.cache-hit != 'true'
+        if: steps.godot_cache.outputs.cache-hit != 'true'
         run: |
           curl -L -o templates.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
           unzip -q templates.zip
@@ -70,13 +70,13 @@ jobs:
         with:
           submodules: true
       - name: Restore
-        id: godot-cache
+        id: godot_cache
         uses: actions/cache/restore@v4
         with:
           path: |
             ./godot
             ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
-          key: '${{ runner.os }}-Godot-${{ env.GODOT_VERSION }}'
+          key: '${{ runner.os }}_Godot_${{ env.GODOT_VERSION }}'
       - name: Import
         run: ./godot --headless --verbose --editor --quit
       - name: Export
@@ -87,13 +87,13 @@ jobs:
         if: matrix.target == 'Web'
         uses: actions/upload-pages-artifact@v3
         with:
-          name: '${{ github.event.repository.name }}_${{ matrix.dir }}_${{ env.GODOT_VERSION }}'
+          name: '${{ github.event.repository.name }}_${{ matrix.dir }}_Godot_${{ env.GODOT_VERSION }}'
           path: 'build/${{ matrix.dir }}'
       - name: Upload Not Web
         if: matrix.target != 'Web'
         uses: actions/upload-artifact@v4
         with:
-          name: '${{ github.event.repository.name }}_${{ matrix.dir }}_${{ env.GODOT_VERSION }}'
+          name: '${{ github.event.repository.name }}_${{ matrix.dir }}_Godot_${{ env.GODOT_VERSION }}'
           path: 'build/${{ matrix.dir }}'
   clean: # delete old github pages deployments
     runs-on: ubuntu-latest
@@ -118,4 +118,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: '${{ github.event.repository.name }}_web_${{ env.GODOT_VERSION }}'
+          artifact_name: '${{ github.event.repository.name }}_web_Godot_${{ env.GODOT_VERSION }}'

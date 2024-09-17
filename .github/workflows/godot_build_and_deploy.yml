@@ -5,7 +5,7 @@ on:
       godot_version:
         description: Godot Version
         required: true
-        default: `4.3`
+        default: '4.3'
 concurrency:
   group: godot_build_and_deploy
   cancel-in-progress: false

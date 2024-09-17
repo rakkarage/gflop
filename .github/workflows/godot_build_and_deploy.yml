@@ -118,4 +118,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: '${{ github.event.repository.name }}_web_Godot_${{ env.GODOT_VERSION }}'
+          artifact_name: '${{ github.event.repository.name }}_Web_Godot_${{ env.GODOT_VERSION }}'

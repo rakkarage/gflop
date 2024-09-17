@@ -18,7 +18,7 @@ func _ready() -> void:
 	_area.mouse_exited.connect(func(): _is_mouse_inside = false)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event in [InputEventMouseButton, InputEventMouseMotion, InputEventScreenDrag, InputEventScreenTouch]:
+	if event is InputEventMouseButton or event is InputEventMouseMotion or event is InputEventScreenDrag or event is InputEventScreenTouch:
 		return
 	_viewport.push_input(event)
 

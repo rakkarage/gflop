@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache
-        id: godot_cache
+        id: godot-cache
         uses: actions/cache@v4
         with:
           path: |
@@ -28,14 +28,14 @@ jobs:
             ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
           key: '${{ runner.os }}_Godot_${{ env.GODOT_VERSION }}'
       - name: Cache Godot
-        if: steps.godot_cache.outputs.cache-hit != 'true'
+        if: steps.godot-cache.outputs.cache-hit != 'true'
         run: |
           curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
           unzip -q godot.zip
           mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 godot
           chmod +x godot
       - name: Cache Godot Templates
-        if: steps.godot_cache.outputs.cache-hit != 'true'
+        if: steps.godot-cache.outputs.cache-hit != 'true'
         run: |
           curl -L -o templates.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
           unzip -q templates.zip
@@ -65,7 +65,7 @@ jobs:
         with:
           submodules: true
       - name: Restore
-        id: godot_cache
+        id: godot-cache
         uses: actions/cache/restore@v4
         with:
           path: |

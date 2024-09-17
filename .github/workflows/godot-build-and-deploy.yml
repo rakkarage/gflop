@@ -78,6 +78,7 @@ jobs:
         run: |
           mkdir -v -p build/${{ matrix.target }}
           ./godot --headless --verbose --export-release '${{ matrix.target }}' build/${{ matrix.target }}/${{ matrix.file }}.${{ matrix.ext }}
+          ls -l build/${{ matrix.target }}
       - name: Upload Web
         if: matrix.target == 'Web'
         uses: actions/upload-pages-artifact@v3

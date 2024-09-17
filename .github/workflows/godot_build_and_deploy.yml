@@ -1,6 +1,11 @@
 name: Godot Build and Deploy
 on:
   workflow_dispatch:
+    inputs:
+      godot_version:
+        description: Godot Version
+        required: true
+        default: `4.3`
 concurrency:
   group: godot_build_and_deploy
   cancel-in-progress: false
@@ -9,7 +14,7 @@ permissions:
   pages: write
   id-token: write
 env:
-  GODOT_VERSION: 4.3
+  GODOT_VERSION: ${{ github.event.inputs.godot_version }}
   FILE_NAME: ${{ github.event.repository.name }}
 jobs:
   setup: # cache godot and templates

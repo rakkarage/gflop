@@ -1,4 +1,4 @@
-# **gflop**
+# gflop: Godot Cover Flow
 
 <!-- markdownlint-disable MD033 -->
 <img align="right" src="icon.png" alt="Icon">
@@ -7,6 +7,8 @@
 Recreating [this](https://github.com/rakkarage/FlopUnity) Unity3D Cover Flow in Godot.
 
 Can test WIP here: <https://rakkarage.github.io/gflop/>
+
+[![Godot Build and Deploy](https://github.com/rakkarage/gflop/actions/workflows/godot_build_and_deploy.yml/badge.svg)](https://github.com/rakkarage/gflop/actions/workflows/godot_build_and_deploy.yml)
 
 Thanks.
 

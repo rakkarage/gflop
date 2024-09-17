@@ -1,4 +1,4 @@
-name: 🤖 Godot Build and Deploy
+name: Godot Build and Deploy 🤖
 on:
   workflow_dispatch:
     inputs:
@@ -17,7 +17,7 @@ env:
   GODOT_VERSION: ${{ github.event.inputs.godot_version }}
 jobs:
   setup: # cache godot and templates
-    name: 🛠️ Setup
+    name: Setup 🛠️
     runs-on: ubuntu-latest
     steps:
       - name: Cache
@@ -43,7 +43,7 @@ jobs:
           mkdir -v -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
   build: # build godot for 'all' platforms
-    name: 🏗️ Build
+    name: Build 🏗️
     needs: setup
     runs-on: ubuntu-latest
     strategy:
@@ -93,7 +93,7 @@ jobs:
           name: '${{ github.event.repository.name }}_${{ matrix.target }}_Godot_${{ env.GODOT_VERSION }}'
           path: 'build/${{ matrix.target }}'
   clean: # delete old github pages deployments
-    name: 🧹 Clean
+    name: Clean 🧹
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -104,7 +104,7 @@ jobs:
           environment: github-pages
           onlyRemoveDeployments: true
   deploy: # deploy web artifact to github pages
-    name: 🚀 Deploy
+    name: Deploy 🚀
     needs: [build, clean]
     runs-on: ubuntu-latest
     environment:

@@ -8,7 +8,7 @@ Recreating [this](https://github.com/rakkarage/FlopUnity) Unity3D Cover Flow in 
 
 Can test WIP here: <https://rakkarage.github.io/gflop/>
 
-[![Godot Build and Deploy](https://github.com/rakkarage/gflop/actions/workflows/godot_build_and_deploy.yml/badge.svg)](https://github.com/rakkarage/gflop/actions/workflows/godot_build_and_deploy.yml)
+[![Godot Build and Deploy](https://github.com/rakkarage/gflop/actions/workflows/godot-build-and-deploy.yml/badge.svg)](https://github.com/rakkarage/gflop/actions/workflows/godot-build-and-deploy.yml)
 
 Thanks.
 

@@ -9,6 +9,7 @@ extends Node3D
 @onready var _mask_fore: Button = $Mask/SubViewport/Interface/Panel/Margin/VBox/HBox/Fore
 @onready var _mask_area: Area3D = $Mask/Area3D
 @onready var _mask_children: Node3D = $Mask/Children
+@onready var _audio: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 @export var _child_count := 10
 @export var _child_scene: PackedScene:
@@ -105,17 +106,21 @@ func _on_scroll_bar_value_changed(value: float) -> void:
 	_mask_fore.disabled = value >= _scroll_bar.max_value - 1
 
 func _on_back_pressed() -> void:
+	_audio.play()
 	_ease_to(_get_current() - 1)
 	# _scroll_bar.value = max(0, _scroll_bar.value - 1)
 
 func _on_fore_pressed() -> void:
+	_audio.play()
 	_ease_to(_get_current() + 1)
 	# _scroll_bar.value = min(_scroll_bar.max_value, _scroll_bar.value + 1)
 
 func _on_Top_pressed() -> void:
+	_audio.play()
 	print("Top")
 
 func _on_Bottom_pressed() -> void:
+	_audio.play()
 	print("Bottom")
 
 func _get_configuration_warnings() -> PackedStringArray:

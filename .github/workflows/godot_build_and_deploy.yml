@@ -1,8 +1,8 @@
-name: Godot to GitHub Pages
+name: Godot Build and Deploy
 on:
   workflow_dispatch:
 concurrency:
-  group: pages
+  group: godot_build_and_deploy
   cancel-in-progress: false
 permissions:
   contents: read
@@ -101,7 +101,7 @@ jobs:
           environment: github-pages
           onlyRemoveDeployments: true
   deploy: # deploy web artifact to github pages
-    needs: [clean, build]
+    needs: [build, clean]
     runs-on: ubuntu-latest
     environment:
       name: github-pages

@@ -87,13 +87,13 @@ jobs:
         if: matrix.target == 'Web'
         uses: actions/upload-pages-artifact@v3
         with:
-          name: '${{ matrix.dir }}'
+          name: '${{ github.event.repository.name }}_${{ matrix.dir }}_${{ env.GODOT_VERSION }}'
           path: 'build/${{ matrix.dir }}'
       - name: Upload Not Web
         if: matrix.target != 'Web'
         uses: actions/upload-artifact@v4
         with:
-          name: '${{ matrix.dir }}'
+          name: '${{ github.event.repository.name }}_${{ matrix.dir }}_${{ env.GODOT_VERSION }}'
           path: 'build/${{ matrix.dir }}'
   clean: # delete old github pages deployments
     runs-on: ubuntu-latest
@@ -118,4 +118,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: web
+          artifact_name: '${{ github.event.repository.name }}_web_${{ env.GODOT_VERSION }}'

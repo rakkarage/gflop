@@ -49,19 +49,15 @@ jobs:
       matrix:
         include:
           - target: Linux
-            dir: Linux
             file: $FILE_NAME
             ext: x86_64
           - target: macOS
-            dir: macOS
             file: $FILE_NAME
             ext: zip
           - target: Web
-            dir: Web
             file: index
             ext: html
-          - target: 'Windows Desktop'
-            dir: Windows
+          - target: Windows
             file: $FILE_NAME
             ext: exe
     steps:
@@ -81,20 +77,20 @@ jobs:
         run: ./godot --headless --verbose --editor --quit
       - name: Export
         run: |
-          mkdir -v -p build/${{ matrix.dir }}
-          ./godot --headless --verbose --export-release '${{ matrix.target }}' build/${{ matrix.dir }}/${{ matrix.file }}.${{ matrix.ext }}
+          mkdir -v -p build/${{ matrix.target }}
+          ./godot --headless --verbose --export-release '${{ matrix.target }}' build/${{ matrix.target }}/${{ matrix.file }}.${{ matrix.ext }}
       - name: Upload Web
         if: matrix.target == 'Web'
         uses: actions/upload-pages-artifact@v3
         with:
-          name: '${{ github.event.repository.name }}_${{ matrix.dir }}_Godot_${{ env.GODOT_VERSION }}'
-          path: 'build/${{ matrix.dir }}'
+          name: '${{ github.event.repository.name }}_${{ matrix.target }}_Godot_${{ env.GODOT_VERSION }}'
+          path: 'build/${{ matrix.target }}'
       - name: Upload Not Web
         if: matrix.target != 'Web'
         uses: actions/upload-artifact@v4
         with:
-          name: '${{ github.event.repository.name }}_${{ matrix.dir }}_Godot_${{ env.GODOT_VERSION }}'
-          path: 'build/${{ matrix.dir }}'
+          name: '${{ github.event.repository.name }}_${{ matrix.target }}_Godot_${{ env.GODOT_VERSION }}'
+          path: 'build/${{ matrix.target }}'
   Clean: # delete old github pages deployments
     runs-on: ubuntu-latest
     permissions: write-all

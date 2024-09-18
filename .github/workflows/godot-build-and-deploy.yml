@@ -93,7 +93,7 @@ jobs:
           path: 'build/${{ matrix.target }}'
   Clean: # delete old github pages deployments
     runs-on: ubuntu-latest
-    # permissions: write-all
+    permissions: write-all
     steps:
       - name: Delete
         uses: strumwolf/delete-deployment-environment@v3

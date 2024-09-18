@@ -1,6 +1,10 @@
 name: Trigger Godot Build and Deploy
 on:
   workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 jobs:
-  trigger:
+  trigger-godot-build-and-deploy:
     uses: ./.github/workflows/godot-build-and-deploy.yml

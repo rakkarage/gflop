@@ -13,4 +13,3 @@ jobs:
     uses: rakkarage/auto/.github/workflows/godot-build-and-deploy.yml@main
     with:
       godot_version: ${{ github.event.inputs.godot_version }}
-

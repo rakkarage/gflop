@@ -9,7 +9,7 @@ permissions:
   pages: write
   id-token: write
 jobs:
-  trigger:
+  godot-build-and-deploy:
     uses: ./.github/workflows/godot-build-and-deploy.yml
     with:
       godot_version: ${{ github.event.inputs.godot_version }}

@@ -4,5 +4,5 @@ on:
 permissions:
   deployments: write
 jobs:
-  trigger:
+  trigger-delete-old-pages:
     uses: ./.github/workflows/delete-old-pages.yml

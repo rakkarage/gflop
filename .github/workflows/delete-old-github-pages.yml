@@ -4,29 +4,14 @@ on:
 concurrency:
   group: delete-old-pages
   cancel-in-progress: false
-permissions:
-  deployments: write
 jobs:
   Clean:
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install
-        run: |
-          sudo apt update
-          sudo apt install gh
-      - name: Authenticate
-        run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
-      - name: List
-        run: |
-          gh api repos/:owner/:repo/deployments --paginate > deployments.json
-          cat deployments.json  # For logging purposes
       - name: Delete
-        run: |
-          thirty_days_ago=$(date -d '-30 days' +%s)
-          for deployment_id in $(jq -r '.[] | select(.created_at | fromdateiso8601 < $thirty_days_ago) | .id' deployments.json); do
-            echo "Deleting deployment $deployment_id"
-            gh api repos/:owner/:repo/deployments/$deployment_id --method DELETE
-          done
+        uses: strumwolf/delete-deployment-environment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: github-pages
+          onlyRemoveDeployments: true

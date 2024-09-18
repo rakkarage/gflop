@@ -1,8 +1,6 @@
 name: Trigger Delete Old GitHub Pages
 on:
   workflow_dispatch:
-permissions:
-  deployments: write
 jobs:
   trigger:
     uses: rakkarage/gflop/.github/workflows/delete-old-github-pages.yml@main

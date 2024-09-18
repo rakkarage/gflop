@@ -7,7 +7,8 @@ concurrency:
 jobs:
   Clean:
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      deployments: write
     steps:
       - name: Delete
         uses: strumwolf/delete-deployment-environment@v3

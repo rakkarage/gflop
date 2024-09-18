@@ -9,7 +9,7 @@ permissions:
   pages: write
   id-token: write
 jobs:
-  trigger:
-    uses: rakkarage/gflop/.github/workflows/godot-build-and-deploy.yml@main
+  Trigger:
+    uses: rakkarage/workflows/godot-build-and-deploy.yml@main
     with:
       godot_version: ${{ github.event.inputs.godot_version }}

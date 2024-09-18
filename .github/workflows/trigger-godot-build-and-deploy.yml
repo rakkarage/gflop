@@ -3,6 +3,6 @@ on:
   workflow_dispatch:
 jobs:
   trigger:
-    uses: ./.github/workflows/reusable-godot-build-and-deploy.yml
+    uses: ./.github/workflows/godot-build-and-deploy.yml
     with:
       godot_version: 4.3

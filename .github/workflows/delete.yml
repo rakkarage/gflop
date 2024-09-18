@@ -1,13 +1,7 @@
 name: Clean
 on:
   workflow_dispatch:
-    inputs:
-      godot_version:
-        default: '4.3'
 permissions:
-  contents: read
-  pages: write
-  id-token: write
   deployments: write
 jobs:
   Clean:

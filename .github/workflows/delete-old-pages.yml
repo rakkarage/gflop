@@ -1,4 +1,4 @@
-name: Delete Old GitHub Pages Deployments
+name: Delete Old GitHub Pages
 on:
   workflow_call:
 concurrency:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: List Deployments
-        run: gh deployment list --environment ${{ inputs.environment }} > deployments.txt
+        run: gh deployment list --environment github-pages > deployments.txt
     # - name: Delete Old Deployments
     #   run: |
     #     while IFS= read -r line
@@ -19,6 +19,6 @@ jobs:
     #       deployment_id=$(echo $line | awk '{print $1}')
     #       deployment_date=$(echo $line | awk '{print $2}')
     #       if [ $(date -d $deployment_date +%s) -lt $(date -d '-30 days' +%s) ]; then
-    #         gh deployment delete $deployment_id --environment ${{ inputs.environment }}
+    #         gh deployment delete $deployment_id --environment github-pages
     #       fi
     #     done < deployments.txt

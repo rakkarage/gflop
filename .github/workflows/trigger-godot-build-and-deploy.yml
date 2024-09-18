@@ -1,9 +1,6 @@
 name: Trigger Godot Build and Deploy
 on:
   workflow_dispatch:
-    inputs:
-      godot_version:
-        default: '4.3'
 permissions:
   contents: read
   pages: write
@@ -11,5 +8,3 @@ permissions:
 jobs:
   Trigger:
     uses: rakkarage/auto/.github/workflows/godot-build-and-deploy.yml@main
-    with:
-      godot_version: ${{ github.event.inputs.godot_version }}

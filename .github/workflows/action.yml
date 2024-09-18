@@ -1,3 +1,4 @@
+name: Action
 on:
   workflow_dispatch:
     inputs:

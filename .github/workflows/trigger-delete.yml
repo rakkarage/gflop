@@ -1,8 +1,8 @@
-name: Clean
+name: Delete Old Pages
 on:
   workflow_dispatch:
 permissions:
   deployments: write
 jobs:
-  Clean:
+  delete-old-pages:
     uses: ./.github/workflows/delete-old-pages.yml

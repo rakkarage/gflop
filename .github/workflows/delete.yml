@@ -5,6 +5,4 @@ permissions:
   deployments: write
 jobs:
   Clean:
-    uses: ./.github/workflows/godot-build-and-deploy.yml
-    with:
-      godot_version: ${{ github.event.inputs.godot_version }}
+    uses: ./.github/workflows/delete-old-pages.yml

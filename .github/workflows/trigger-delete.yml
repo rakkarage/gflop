@@ -1,8 +1,8 @@
-name: Delete Old Pages
+name: Trigger Delete Old Pages
 on:
   workflow_dispatch:
 permissions:
   deployments: write
 jobs:
-  delete-old-pages:
+  trigger:
     uses: ./.github/workflows/delete-old-pages.yml

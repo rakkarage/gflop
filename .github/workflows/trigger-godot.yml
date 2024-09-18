@@ -1,4 +1,4 @@
-name: Godot Build and Deploy
+name: Trigger Godot Build and Deploy
 on:
   workflow_dispatch:
     inputs:
@@ -9,7 +9,7 @@ permissions:
   pages: write
   id-token: write
 jobs:
-  godot-build-and-deploy:
+  trigger:
     uses: ./.github/workflows/godot-build-and-deploy.yml
     with:
       godot_version: ${{ github.event.inputs.godot_version }}

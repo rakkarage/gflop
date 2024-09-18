@@ -16,7 +16,7 @@ permissions:
 env:
   GODOT_VERSION: ${{ github.event.inputs.godot_version }}
 jobs:
-  Setup: # cache godot and templates
+  Setup:
     runs-on: ubuntu-latest
     steps:
       - name: Cache
@@ -42,7 +42,7 @@ jobs:
           unzip -q templates.zip
           mkdir -v -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-  Build: # build godot for 'all' platforms
+  Build:
     needs: Setup
     runs-on: ubuntu-latest
     strategy:
@@ -91,18 +91,8 @@ jobs:
         with:
           name: '${{ github.event.repository.name }}_${{ matrix.target }}_Godot_${{ env.GODOT_VERSION }}'
           path: 'build/${{ matrix.target }}'
-  Clean: # delete old github pages deployments
-    runs-on: ubuntu-latest
-    permissions: write-all
-    steps:
-      - name: Delete
-        uses: strumwolf/delete-deployment-environment@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          environment: github-pages
-          onlyRemoveDeployments: true
-  Deploy: # deploy web artifact to github pages
-    needs: [Build, Clean]
+  Deploy:
+    needs: Build
     runs-on: ubuntu-latest
     environment:
       name: github-pages

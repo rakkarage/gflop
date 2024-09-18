@@ -30,6 +30,7 @@ jobs:
       - name: Cache Godot
         if: steps.godot-cache.outputs.cache-hit != 'true'
         run: |
+          echo ${GODOT_VERSION}
           curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
           unzip -q godot.zip
           mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 godot

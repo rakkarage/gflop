@@ -1,0 +1,6 @@
+on:
+  workflow_dispatch:
+jobs:
+  trigger:
+    uses: ./.github/workflows/godot-build-and-deploy.yml
+	

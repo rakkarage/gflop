@@ -1,4 +1,4 @@
-name: Trigger Delete Old GitHub Pages
+name: Delete Old GitHub Pages
 on:
   workflow_dispatch:
 permissions:

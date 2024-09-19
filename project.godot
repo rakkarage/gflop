@@ -19,8 +19,8 @@ config/icon="res://icon.png"
 
 [gui]
 
-theme/custom="res://Interface/Theme.tres"
-theme/custom_font="res://Interface/Font/SuperWhite.fnt"
+theme/custom="res://addons/Interface/Theme.tres"
+theme/custom_font="res://addons/Interface/Font/SuperWhite.fnt"
 
 [rendering]
 

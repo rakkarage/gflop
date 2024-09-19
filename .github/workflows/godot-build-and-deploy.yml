@@ -10,7 +10,7 @@ permissions:
   id-token: write
   deployments: write
 jobs:
-  _:
+  Trigger:
     uses: rakkarage/auto/.github/workflows/godot-build-and-deploy.yml@main
     with:
       godot_version: ${{ github.event.inputs.godot_version }}

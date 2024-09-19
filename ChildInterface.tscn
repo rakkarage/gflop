@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dv354bd7r3aea"]
 
-[ext_resource type="StyleBox" uid="uid://dr3uqk85tasgn" path="res://Interface/Style/Stone.tres" id="1_4pvb5"]
+[ext_resource type="StyleBox" uid="uid://dr3uqk85tasgn" path="res://addons/Interface/Style/Stone.tres" id="1_4pvb5"]
 
 [node name="Interface" type="Control"]
 layout_mode = 3

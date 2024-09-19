@@ -13,9 +13,13 @@ config_version=5
 config/name="gflop"
 run/main_scene="res://Demo.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
-boot_splash/image="res://addons/Henry.png"
+boot_splash/image="res://addons/Intro/Henry.png"
 boot_splash/fullsize=false
 config/icon="res://icon.png"
+
+[autoload]
+
+Cursor="*res://addons/Interface/Cursor.tscn"
 
 [gui]
 

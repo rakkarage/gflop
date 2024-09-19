@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://QuadTilt.gd" id="2_akk6a"]
 [ext_resource type="PackedScene" uid="uid://b75b8kuhmi2r" path="res://Child.tscn" id="2_p48yj"]
 [ext_resource type="PackedScene" uid="uid://cuxe0ccf2jtxo" path="res://CoverFlowInterface.tscn" id="3_ihb8t"]
-[ext_resource type="AudioStream" uid="uid://dehlbqwls3osw" path="res://Interface/Audio/Click.tres" id="5_ek5y1"]
+[ext_resource type="AudioStream" uid="uid://dehlbqwls3osw" path="res://addons/Interface/Audio/Click.tres" id="5_ek5y1"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_glf76"]
 size = Vector2(2, 1.236)

@@ -1,4 +1,4 @@
-name: Godot Build and Deploy
+name: Gobot
 on:
   workflow_dispatch:
     inputs:
@@ -12,6 +12,6 @@ permissions:
   deployments: write
 jobs:
   Trigger:
-    uses: rakkarage/auto/.github/workflows/godot-build-and-deploy.yml@main
+    uses: rakkarage/auto/.github/workflows/gobot.yml@main
     with:
       godot_version: ${{ github.event.inputs.godot_version }}

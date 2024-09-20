@@ -7,7 +7,6 @@ on:
         default: '4.3'
 permissions:
   pages: write
-  id-token: write
   deployments: write
 jobs:
   Gobot:

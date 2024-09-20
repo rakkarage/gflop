@@ -31,6 +31,7 @@ var _drag_velocity := 0.0
 var _last_mouse_position := Vector2()
 var _momentum := 0.0
 var _friction := 0.95
+var _tween: Tween
 
 func _ready() -> void:
 	_mask_back.pressed.connect(_on_back_pressed)
@@ -64,8 +65,10 @@ func _input(event: InputEvent) -> void:
 		if _dragging:
 			var delta = event.position - _last_mouse_position
 			_drag_velocity = delta.x / get_viewport().size.x * _child_count
+			print("Before: ", _scroll_bar.value - _drag_velocity)
 			_scroll_bar.set_value_no_signal(_scroll_bar.value - _drag_velocity)
-			_drag_to_float(_scroll_bar.value)
+			_drag_to(_scroll_bar.value)
+			print("After: ", _scroll_bar.value)
 			_last_mouse_position = event.position
 		else:
 			for i in range(_mask_children.get_child_count()):
@@ -101,19 +104,25 @@ func _update_scroll_bar() -> void:
 	_scroll_bar.page = 1
 
 func _on_scroll_bar_value_changed(value: float) -> void:
-	_drag_to_float(value)
+	_drag_to(value)
 	_mask_back.disabled = value == 0
 	_mask_fore.disabled = value >= _scroll_bar.max_value - 1
 
 func _on_back_pressed() -> void:
 	_audio.play()
-	_ease_to(_get_current() - 1)
-	# _scroll_bar.value = max(0, _scroll_bar.value - 1)
+	_momentum = 0
+	var current := roundi(_current)
+	var prev := current + 1
+	print(current, ", ", prev)
+	_ease_to(prev)
 
 func _on_fore_pressed() -> void:
 	_audio.play()
-	_ease_to(_get_current() + 1)
-	# _scroll_bar.value = min(_scroll_bar.max_value, _scroll_bar.value + 1)
+	_momentum = 0
+	var current := roundi(_current)
+	var next := current + 1
+	print(current, ", ", next)
+	_ease_to(next)
 
 func _on_Top_pressed() -> void:
 	_audio.play()
@@ -129,24 +138,23 @@ func _get_configuration_warnings() -> PackedStringArray:
 	else:
 		return []
 
-func _get_current() -> int:
-	return int(-_current / OFFSET_X)
+# func _get_current() -> float:
+# 	return int(-_current / OFFSET_X)
 
 func _ease_to(target: int) -> void:
-	var tween := create_tween()
-	tween.set_ease(Tween.EASE_OUT)
-	tween.set_trans(Tween.TRANS_SPRING)
-	# tween.tween_property(self, "_current", target * -OFFSET_X, TWEEN_TIME)
-	# this should tween drag_to_float instead of _current
-	tween.tween_method(_drag_to_float, _current, target * -OFFSET_X, TWEEN_TIME)
+	print("_ease_to: ", target)
+	if _tween != null:
+		_tween.kill()
+	_tween = create_tween()
+	_tween.set_ease(Tween.EASE_OUT)
+	_tween.set_trans(Tween.TRANS_SPRING)
+	_tween.tween_method(_drag_to, _current, target * OFFSET_X, TWEEN_TIME)
 
-func _ease_to_vector3(target: Vector3) -> void:
-	_ease_to(int(target.x))
+# func _ease_to_vector3(target: Vector3) -> void:
+# 	_ease_to(int(target.x))
 
-func _drag_to(value: int) -> void:
-	_drag_to_float(value * -OFFSET_X)
-
-func _drag_to_float(value: float) -> void:
+func _drag_to(value: float) -> void:
 	_current = value
+	print(_current)
 	for i in range(_mask_children.get_child_count()):
 		_set_child_position(_mask_children.get_child(i), i, _current)

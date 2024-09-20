@@ -11,7 +11,7 @@ permissions:
   id-token: write
   deployments: write
 jobs:
-  Trigger:
+  Gobot:
     uses: rakkarage/auto/.github/workflows/gobot.yml@main
     with:
       godot_version: ${{ github.event.inputs.godot_version }}

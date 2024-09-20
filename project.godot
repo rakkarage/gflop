@@ -21,6 +21,10 @@ config/icon="res://icon.png"
 
 Cursor="*res://addons/Interface/Cursor.tscn"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
+
 [gui]
 
 theme/custom="res://addons/Interface/Theme.tres"

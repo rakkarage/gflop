@@ -6,7 +6,6 @@ on:
         description: Godot Version
         default: '4.3'
 permissions:
-  contents: read
   pages: write
   id-token: write
   deployments: write

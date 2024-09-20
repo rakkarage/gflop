@@ -14,4 +14,4 @@ jobs:
   Gobot:
     uses: rakkarage/auto/.github/workflows/gobot.yml@main
     with:
-      godot_version: ${{ github.event.inputs.godot-version }}
+      godot-version: ${{ github.event.inputs.godot-version }}

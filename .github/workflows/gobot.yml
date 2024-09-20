@@ -2,7 +2,7 @@ name: Gobot
 on:
   workflow_dispatch:
     inputs:
-      godot_version:
+      godot-version:
         description: Godot Version
         default: '4.3'
 permissions:
@@ -14,4 +14,4 @@ jobs:
   Gobot:
     uses: rakkarage/auto/.github/workflows/gobot.yml@main
     with:
-      godot_version: ${{ github.event.inputs.godot_version }}
+      godot_version: ${{ github.event.inputs.godot-version }}

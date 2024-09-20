@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       godot_version:
+        description: Godot Version
         default: '4.3'
 permissions:
   contents: read

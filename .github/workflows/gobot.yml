@@ -17,3 +17,4 @@ jobs:
     uses: rakkarage/auto/.github/workflows/gobot.yml@main
     with:
       godot-version: ${{ github.event.inputs.godot-version }}
+      delete-old-pages: ${{ github.event.inputs.delete-old-pages }}

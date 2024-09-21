@@ -6,7 +6,7 @@ on:
         description: Godot Version
         default: '4.3'
       delete-old-pages:
-        description: Delete old GitHub Pages deployments.
+        description: Delete Old Deployments
         default: 'false'
 permissions:
   pages: write

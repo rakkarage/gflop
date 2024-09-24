@@ -5,11 +5,7 @@ on:
       godot-version:
         description: Godot Version
         default: '4.3'
-        type: choice
-        options:
-          - '4.3'
-          - '4.2'
-          - '4.1'
+        type: string
       delete-old-pages:
         description: Delete Old Pages
         default: false

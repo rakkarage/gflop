@@ -23,13 +23,14 @@ const OFFSET_DEPTH := 0.0333
 
 const TWEEN_TIME := 0.333
 
-# TODO: can use value instead of _current?
+const MOMENTUM_FACTOR := -100.0
+const MOMENTUM_FRICTION := 0.9
+
 var _current := 0.0
 var _dragging := false
 var _drag_velocity := 0.0
 var _last_mouse_position := Vector2()
 var _momentum := 0.0
-var _friction := 0.95
 var _tween: Tween
 
 func _ready() -> void:
@@ -40,15 +41,15 @@ func _ready() -> void:
 	_update_scroll_bar()
 	_on_scroll_bar_value_changed(0)
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	for child in _mask_children.get_children():
 		var mat: ShaderMaterial = child.get_surface_override_material(0)
 		if mat:
 			mat.set_shader_parameter("mask_transform", _mask.global_transform)
 			mat.set_shader_parameter("mask_size", _mask.mesh.size)
 	if not _dragging and abs(_momentum) > 0.001:
-		_scroll_bar.value += _momentum * _delta
-		_momentum *= _friction
+		_drag_to(_current + _momentum * delta)
+		_momentum *= MOMENTUM_FRICTION
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -59,13 +60,12 @@ func _input(event: InputEvent) -> void:
 				_momentum = 0.0
 			else:
 				_dragging = false
-				_momentum = _drag_velocity
+				_momentum = _drag_velocity * MOMENTUM_FACTOR
 	elif event is InputEventMouseMotion:
 		if _dragging:
 			var delta = event.position - _last_mouse_position
 			_drag_velocity = delta.x / get_viewport().size.x * _child_count
-			_scroll_bar.set_value_no_signal(_scroll_bar.value - _drag_velocity)
-			_drag_to(_scroll_bar.value)
+			_drag_to(_current - _drag_velocity)
 			_last_mouse_position = event.position
 		else:
 			for i in range(_mask_children.get_child_count()):

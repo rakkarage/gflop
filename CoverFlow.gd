@@ -9,7 +9,6 @@ extends Node3D
 @onready var _mask_fore: Button = $Mask/SubViewport/Interface/Panel/Margin/VBox/HBox/Fore
 @onready var _mask_area: Area3D = $Mask/Area3D
 @onready var _mask_children: Node3D = $Mask/Children
-@onready var _audio: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 @export var _child_count := 10
 @export var _child_scene: PackedScene:
@@ -65,10 +64,8 @@ func _input(event: InputEvent) -> void:
 		if _dragging:
 			var delta = event.position - _last_mouse_position
 			_drag_velocity = delta.x / get_viewport().size.x * _child_count
-			print("Before: ", _scroll_bar.value - _drag_velocity)
 			_scroll_bar.set_value_no_signal(_scroll_bar.value - _drag_velocity)
 			_drag_to(_scroll_bar.value)
-			print("After: ", _scroll_bar.value)
 			_last_mouse_position = event.position
 		else:
 			for i in range(_mask_children.get_child_count()):
@@ -107,27 +104,21 @@ func _on_scroll_bar_value_changed(value: float) -> void:
 	_drag_to(value)
 
 func _on_back_pressed() -> void:
-	_audio.play()
+	Audio.click()
 	_momentum = 0
-	var current := roundi(_current)
-	var prev := current - 1
-	print(current, ", ", prev)
-	_ease_to(prev)
+	_ease_to(roundi(_current) - 1)
 
 func _on_fore_pressed() -> void:
-	_audio.play()
+	Audio.click()
 	_momentum = 0
-	var current := roundi(_current)
-	var next := current + 1
-	print(current, ", ", next)
-	_ease_to(next)
+	_ease_to(roundi(_current) + 1)
 
 func _on_Top_pressed() -> void:
-	_audio.play()
+	Audio.click()
 	print("Top")
 
 func _on_Bottom_pressed() -> void:
-	_audio.play()
+	Audio.click()
 	print("Bottom")
 
 func _get_configuration_warnings() -> PackedStringArray:
@@ -136,9 +127,6 @@ func _get_configuration_warnings() -> PackedStringArray:
 	else:
 		return []
 
-# func _get_current() -> float:
-# 	return int(-_current / OFFSET_X)
-
 func _ease_to(target: int) -> void:
 	if _tween != null:
 		_tween.kill()
@@ -146,12 +134,8 @@ func _ease_to(target: int) -> void:
 	_tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SPRING)
 	_tween.tween_method(_drag_to, _current, target, TWEEN_TIME)
 
-# func _ease_to_vector3(target: Vector3) -> void:
-# 	_ease_to(int(target.x))
-
 func _drag_to(value: float) -> void:
 	_current = value
-	print(_current)
 	for i in range(_mask_children.get_child_count()):
 		_set_child_position(_mask_children.get_child(i), i, _current)
 	_update_button_status(_current)

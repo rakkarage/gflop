@@ -105,14 +105,12 @@ func _update_scroll_bar() -> void:
 
 func _on_scroll_bar_value_changed(value: float) -> void:
 	_drag_to(value)
-	_mask_back.disabled = value == 0
-	_mask_fore.disabled = value >= _scroll_bar.max_value - 1
 
 func _on_back_pressed() -> void:
 	_audio.play()
 	_momentum = 0
 	var current := roundi(_current)
-	var prev := current + 1
+	var prev := current - 1
 	print(current, ", ", prev)
 	_ease_to(prev)
 
@@ -142,13 +140,11 @@ func _get_configuration_warnings() -> PackedStringArray:
 # 	return int(-_current / OFFSET_X)
 
 func _ease_to(target: int) -> void:
-	print("_ease_to: ", target)
 	if _tween != null:
 		_tween.kill()
 	_tween = create_tween()
-	_tween.set_ease(Tween.EASE_OUT)
-	_tween.set_trans(Tween.TRANS_SPRING)
-	_tween.tween_method(_drag_to, _current, target * OFFSET_X, TWEEN_TIME)
+	_tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SPRING)
+	_tween.tween_method(_drag_to, _current, target, TWEEN_TIME)
 
 # func _ease_to_vector3(target: Vector3) -> void:
 # 	_ease_to(int(target.x))
@@ -158,3 +154,9 @@ func _drag_to(value: float) -> void:
 	print(_current)
 	for i in range(_mask_children.get_child_count()):
 		_set_child_position(_mask_children.get_child(i), i, _current)
+	_update_button_status(_current)
+
+func _update_button_status(value: float) -> void:
+	_scroll_bar.set_value_no_signal(value)
+	_mask_back.disabled = value <= 0
+	_mask_fore.disabled = value >= _child_count - 1

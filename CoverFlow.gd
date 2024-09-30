@@ -25,12 +25,14 @@ const TWEEN_TIME := 0.333
 
 const MOMENTUM_FACTOR := -100.0
 const MOMENTUM_FRICTION := 0.9
+const MOMENTUM_THRESHOLD := 0.001
 
 var _current := 0.0
 var _dragging := false
 var _drag_velocity := 0.0
 var _last_mouse_position := Vector2()
 var _momentum := 0.0
+var _snap := false
 var _tween: Tween
 
 func _ready() -> void:
@@ -47,9 +49,17 @@ func _process(delta: float) -> void:
 		if mat:
 			mat.set_shader_parameter("mask_transform", _mask.global_transform)
 			mat.set_shader_parameter("mask_size", _mask.mesh.size)
-	if not _dragging and abs(_momentum) > 0.001:
-		_drag_to(_current + _momentum * delta)
-		_momentum *= MOMENTUM_FRICTION
+	if not _dragging:
+		if abs(_momentum) > MOMENTUM_THRESHOLD:
+			_drag_to(_current + _momentum * delta)
+			_momentum *= MOMENTUM_FRICTION
+		else:
+			if !_snap:
+				_snap = true
+				_momentum = 0.0
+				_ease_to(clamp(roundi(_current), 0, _child_count - 1))
+	else:
+		_snap = false
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -138,9 +148,9 @@ func _drag_to(value: float) -> void:
 	_current = value
 	for i in range(_mask_children.get_child_count()):
 		_set_child_position(_mask_children.get_child(i), i, _current)
-	_update_button_status(_current)
+	_update_scroll_status(_current)
 
-func _update_button_status(value: float) -> void:
+func _update_scroll_status(value: float) -> void:
 	_scroll_bar.set_value_no_signal(value)
 	_mask_back.disabled = value <= 0
 	_mask_fore.disabled = value >= _child_count - 1

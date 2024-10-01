@@ -35,7 +35,7 @@ var _drag_velocity := 0.0
 var _last_mouse_position := Vector2()
 var _last_move_time := 0.0
 var _momentum := 0.0
-var _snap := true
+var _snap := false
 var _tween: Tween
 
 func _ready() -> void:
@@ -82,6 +82,7 @@ func _process(delta: float) -> void:
 			mat.set_shader_parameter("mask_size", _mask.mesh.size)
 	if not _dragging:
 		if abs(_momentum) > MOMENTUM_THRESHOLD:
+			_snap = true
 			_drag_to(_current + _momentum * delta)
 			_momentum *= MOMENTUM_FRICTION
 		else:
@@ -89,8 +90,6 @@ func _process(delta: float) -> void:
 				_snap = false
 				_momentum = 0.0
 				_ease_to(clamp(roundi(_current), 0, _child_count - 1))
-	else:
-		_snap = true
 
 # disables mouse input when the mouse is outside the mask, so only the visible parts of controls are interactive
 func _is_mouse_inside_mask() -> bool:

@@ -27,10 +27,13 @@ const MOMENTUM_FACTOR := -100.0
 const MOMENTUM_FRICTION := 0.9
 const MOMENTUM_THRESHOLD := 0.001
 
+const MOVE_TIME_THRESHOLD := 0.1
+
 var _current := 0.0
 var _dragging := false
 var _drag_velocity := 0.0
 var _last_mouse_position := Vector2()
+var _last_move_time := 0.0
 var _momentum := 0.0
 var _snap := false
 var _tween: Tween
@@ -49,16 +52,24 @@ func _input(event: InputEvent) -> void:
 			if event.pressed:
 				_dragging = true
 				_last_mouse_position = event.position
+				_last_move_time = Time.get_ticks_msec() / 1000.0
 				_momentum = 0.0
 			else:
 				_dragging = false
+				var current_time = Time.get_ticks_msec() / 1000.0
+				if current_time - _last_move_time > MOVE_TIME_THRESHOLD:
+					_drag_velocity = 0.0
 				_momentum = _drag_velocity * MOMENTUM_FACTOR
 	elif event is InputEventMouseMotion:
 		if _dragging:
 			var delta = event.position - _last_mouse_position
-			_drag_velocity = delta.x / get_viewport().size.x * _child_count
+			if abs(delta.x) < MOMENTUM_THRESHOLD:
+				_drag_velocity = 0.0
+			else:
+				_drag_velocity = delta.x / get_viewport().size.x * _child_count
 			_drag_to(_current - _drag_velocity)
 			_last_mouse_position = event.position
+			_last_move_time = Time.get_ticks_msec() / 1000.0
 		for i in range(_mask_children.get_child_count()):
 			var child := _mask_children.get_child(i) as QuadFace
 			child._is_mouse_inside_mask = _is_mouse_inside_mask()

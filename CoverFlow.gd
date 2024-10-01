@@ -43,6 +43,26 @@ func _ready() -> void:
 	_update_scroll_bar()
 	_on_scroll_bar_value_changed(0)
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				_dragging = true
+				_last_mouse_position = event.position
+				_momentum = 0.0
+			else:
+				_dragging = false
+				_momentum = _drag_velocity * MOMENTUM_FACTOR
+	elif event is InputEventMouseMotion:
+		if _dragging:
+			var delta = event.position - _last_mouse_position
+			_drag_velocity = delta.x / get_viewport().size.x * _child_count
+			_drag_to(_current - _drag_velocity)
+			_last_mouse_position = event.position
+		for i in range(_mask_children.get_child_count()):
+			var child := _mask_children.get_child(i) as QuadFace
+			child._is_mouse_inside_mask = _is_mouse_inside_mask()
+
 func _process(delta: float) -> void:
 	for child in _mask_children.get_children():
 		var mat: ShaderMaterial = child.get_surface_override_material(0)
@@ -60,27 +80,6 @@ func _process(delta: float) -> void:
 				_ease_to(clamp(roundi(_current), 0, _child_count - 1))
 	else:
 		_snap = false
-
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				_dragging = true
-				_last_mouse_position = event.position
-				_momentum = 0.0
-			else:
-				_dragging = false
-				_momentum = _drag_velocity * MOMENTUM_FACTOR
-	elif event is InputEventMouseMotion:
-		if _dragging:
-			var delta = event.position - _last_mouse_position
-			_drag_velocity = delta.x / get_viewport().size.x * _child_count
-			_drag_to(_current - _drag_velocity)
-			_last_mouse_position = event.position
-		else:
-			for i in range(_mask_children.get_child_count()):
-				var child := _mask_children.get_child(i) as QuadFace
-				child._is_mouse_inside_mask = _is_mouse_inside_mask()
 
 # disables mouse input when the mouse is outside the mask, so only the visible parts of controls are interactive
 func _is_mouse_inside_mask() -> bool:

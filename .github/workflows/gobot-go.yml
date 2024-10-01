@@ -5,16 +5,21 @@ on:
       godot-version:
         description: Godot Version
         default: '4.3'
+        type: string
       environment:
         description: Pages Environment
+        default: github-pages
         type: environment
       delete-old-pages:
         description: Delete Old Pages
+        default: false
         type: boolean
+
 permissions:
   pages: write
   id-token: write
   deployments: write
+
 jobs:
   Gobot:
     uses: rakkarage/auto/.github/workflows/gobot.yml@main

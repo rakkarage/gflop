@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dv354bd7r3aea"]
+[gd_scene load_steps=3 format=3 uid="uid://dv354bd7r3aea"]
 
 [ext_resource type="StyleBox" uid="uid://dr3uqk85tasgn" path="res://addons/Interface/Style/Stone.tres" id="1_4pvb5"]
+[ext_resource type="StyleBox" uid="uid://cqp5dkxpppvpn" path="res://addons/Interface/Style/Paper.tres" id="2_ug6mw"]
 
 [node name="Interface" type="Control"]
 layout_mode = 3
@@ -26,39 +27,10 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+[node name="Button" type="Button" parent="Panel/Margin"]
 layout_mode = 2
-
-[node name="HBoxTop" type="HBoxContainer" parent="Panel/Margin/VBox"]
-layout_mode = 2
-
-[node name="Before" type="Control" parent="Panel/Margin/VBox/HBoxTop"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Top" type="Button" parent="Panel/Margin/VBox/HBoxTop"]
-layout_mode = 2
-text = "Top"
-
-[node name="After" type="Control" parent="Panel/Margin/VBox/HBoxTop"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Control" type="Control" parent="Panel/Margin/VBox"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="HBoxBottom" type="HBoxContainer" parent="Panel/Margin/VBox"]
-layout_mode = 2
-
-[node name="Before" type="Control" parent="Panel/Margin/VBox/HBoxBottom"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Bottom" type="Button" parent="Panel/Margin/VBox/HBoxBottom"]
-layout_mode = 2
-text = "Bottom"
-
-[node name="After" type="Control" parent="Panel/Margin/VBox/HBoxBottom"]
-layout_mode = 2
-size_flags_horizontal = 3
+theme_override_styles/focus = ExtResource("2_ug6mw")
+theme_override_styles/disabled = ExtResource("2_ug6mw")
+theme_override_styles/hover = ExtResource("2_ug6mw")
+theme_override_styles/pressed = ExtResource("2_ug6mw")
+theme_override_styles/normal = ExtResource("2_ug6mw")

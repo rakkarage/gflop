@@ -107,8 +107,7 @@ func _generate_children() -> void:
 		_mask_children.add_child(child)
 		child._look_at_target = _camera.global_position
 		_set_child_position(child, i, _scroll_bar.value)
-		child.get_node("SubViewport/Interface/Panel/Margin/VBox/HBoxTop/Top").pressed.connect(_on_Top_pressed)
-		child.get_node("SubViewport/Interface/Panel/Margin/VBox/HBoxBottom/Bottom").pressed.connect(_on_Bottom_pressed)
+		child.get_node("SubViewport/Interface/Panel/Margin/Button").pressed.connect(_on_Child_pressed.bind(child))
 
 func _get_child_position(index: int, value: float) -> Vector3:
 	return Vector3((index - value) * OFFSET_X, 0, OFFSET_Z + (-abs(index - value) * OFFSET_DEPTH))
@@ -133,13 +132,13 @@ func _on_fore_pressed() -> void:
 	_momentum = 0
 	_ease_to(roundi(_current) + 1)
 
-func _on_Top_pressed() -> void:
+func _on_Child_pressed(child) -> void:
 	Audio.click()
-	print("Top")
-
-func _on_Bottom_pressed() -> void:
-	Audio.click()
-	print("Bottom")
+	child._face_camera = false
+	var tween = create_tween()
+	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SPRING)
+	tween.tween_property(child, "global_rotation:y", child.global_rotation.y + deg_to_rad(360), TWEEN_TIME)
+	tween.tween_callback(func() -> void: child._face_camera = true)
 
 func _get_configuration_warnings() -> PackedStringArray:
 	if _child_scene == null:

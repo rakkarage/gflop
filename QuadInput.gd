@@ -14,8 +14,8 @@ var _last_event_time := -1.0
 
 func _ready() -> void:
 	_area.input_event.connect(_on_input_event)
-	_area.mouse_entered.connect(func(): _is_mouse_inside = true)
-	_area.mouse_exited.connect(func(): _is_mouse_inside = false)
+	_area.mouse_entered.connect(func() -> void: _is_mouse_inside = true)
+	_area.mouse_exited.connect(func() -> void: _is_mouse_inside = false)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton or event is InputEventMouseMotion or event is InputEventScreenDrag or event is InputEventScreenTouch:

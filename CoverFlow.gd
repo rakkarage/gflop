@@ -108,7 +108,10 @@ func _generate_children() -> void:
 		_mask_children.add_child(child)
 		child._look_at_target = _camera.global_position
 		_set_child_position(child, i, _scroll_bar.value)
-		child.get_node("SubViewport/Interface/Panel/Margin/Button").pressed.connect(_on_Child_pressed.bind(child))
+		child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.connect(_on_Child_gui_input.bind(child))
+		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelTop").text = str(i)
+		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelMiddle").text = str(i)
+		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelBottom").text = str(i)
 
 func _get_child_position(index: int, value: float) -> Vector3:
 	return Vector3((index - value) * OFFSET_X, 0, OFFSET_Z + (-abs(index - value) * OFFSET_DEPTH))
@@ -133,13 +136,14 @@ func _on_fore_pressed() -> void:
 	_momentum = 0
 	_ease_to(roundi(_current) + 1)
 
-func _on_Child_pressed(child) -> void:
-	Audio.click()
-	child._face_camera = false
-	var tween = create_tween()
-	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SPRING)
-	tween.tween_property(child, "global_rotation:y", child.global_rotation.y + deg_to_rad(360), TWEEN_TIME)
-	tween.tween_callback(func() -> void: child._face_camera = true)
+func _on_Child_gui_input(event: InputEvent, child: Node) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		Audio.click()
+		child._face_camera = false
+		var tween = create_tween()
+		tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SPRING)
+		tween.tween_property(child, "global_rotation:y", child.global_rotation.y + deg_to_rad(360), TWEEN_TIME)
+		tween.tween_callback(func() -> void: child._face_camera = true)
 
 func _get_configuration_warnings() -> PackedStringArray:
 	if _child_scene == null:

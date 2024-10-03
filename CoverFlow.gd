@@ -46,11 +46,8 @@ func _ready() -> void:
 	_generate_children()
 	_update_scroll_bar()
 	_on_scroll_bar_value_changed(0)
-	_calculate_screen_to_world_factor()
-
-func _calculate_screen_to_world_factor():
-	var distance_to_coverflow = _camera.global_transform.origin.distance_to(_mask.global_transform.origin)
-	var viewport_world_width = 2.0 * distance_to_coverflow * tan(deg_to_rad(_camera.fov * 0.5))
+	var distance_to_coverflow := _camera.global_transform.origin.distance_to(_mask.global_transform.origin)
+	var viewport_world_width := 2.0 * distance_to_coverflow * tan(deg_to_rad(_camera.fov * 0.5))
 	_screen_to_world_factor = viewport_world_width / (get_viewport().size.x * OFFSET_X)
 
 func _input(event: InputEvent) -> void:
@@ -63,13 +60,13 @@ func _input(event: InputEvent) -> void:
 				_momentum = 0.0
 			else:
 				_dragging = false
-				var current_time = Time.get_ticks_msec()
+				var current_time := Time.get_ticks_msec()
 				if current_time - _last_move_time > MOVE_TIME_THRESHOLD:
 					_drag_velocity = 0.0
 				_momentum = _drag_velocity * MOMENTUM_FACTOR
 	elif event is InputEventMouseMotion:
 		if _dragging:
-			var delta = event.position - _last_mouse_position
+			var delta: Vector2 = event.position - _last_mouse_position
 			if abs(delta.x) < MOMENTUM_THRESHOLD:
 				_drag_velocity = 0.0
 			else:
@@ -154,7 +151,7 @@ func _on_Child_gui_input(event: InputEvent, child: Node) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		Audio.click()
 		child._face_camera = false
-		var tween = create_tween()
+		var tween := create_tween()
 		tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SPRING)
 		tween.tween_property(child, "global_rotation:y", child.global_rotation.y + deg_to_rad(360), TWEEN_TIME)
 		tween.tween_callback(func() -> void: child._face_camera = true)
@@ -186,9 +183,7 @@ func _drag_to(value: float) -> void:
 	# update positions
 	for i in _active_children:
 		_set_child_position(_active_children[i], i, _current)
-	_update_scroll_status(_current)
-
-func _update_scroll_status(value: float) -> void:
+	# update scroll bar and buttons
 	_scroll_bar.set_value_no_signal(value)
 	_mask_back.disabled = value <= 0
 	_mask_fore.disabled = value >= _child_count - 1

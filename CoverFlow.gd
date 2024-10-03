@@ -37,6 +37,7 @@ var _last_move_time := 0.0
 var _momentum := 0.0
 var _snap := false
 var _tween: Tween
+var _screen_to_world_factor: float
 
 func _ready() -> void:
 	_mask_back.pressed.connect(_on_back_pressed)
@@ -45,6 +46,12 @@ func _ready() -> void:
 	_generate_children.call_deferred()
 	_update_scroll_bar()
 	_on_scroll_bar_value_changed(0)
+	_calculate_screen_to_world_factor()
+
+func _calculate_screen_to_world_factor():
+	var distance_to_coverflow = _camera.global_transform.origin.distance_to(_mask.global_transform.origin)
+	var viewport_world_width = 2.0 * distance_to_coverflow * tan(deg_to_rad(_camera.fov * 0.5))
+	_screen_to_world_factor = viewport_world_width / (get_viewport().size.x * OFFSET_X)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -66,7 +73,7 @@ func _input(event: InputEvent) -> void:
 			if abs(delta.x) < MOMENTUM_THRESHOLD:
 				_drag_velocity = 0.0
 			else:
-				_drag_velocity = delta.x / get_viewport().size.x * _child_count
+				_drag_velocity = delta.x * _screen_to_world_factor
 			_drag_to(_current - _drag_velocity)
 			_last_mouse_position = event.position
 			_last_move_time = Time.get_ticks_msec()

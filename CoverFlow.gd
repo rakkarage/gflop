@@ -10,7 +10,7 @@ extends Node3D
 @onready var _mask_area: Area3D = $Mask/Area3D
 @onready var _mask_children: Node3D = $Mask/Children
 
-@export var _child_count := 10
+@export var _child_count := 5000
 @export var _child_scene: PackedScene:
 	set(value):
 		_child_scene = value
@@ -29,6 +29,9 @@ const MOMENTUM_THRESHOLD := 0.001
 
 const MOVE_TIME_THRESHOLD := 100
 
+const POOL_SIZE := 21
+const VISIBLE_RANGE := 10
+
 var _current := 0.0
 var _dragging := false
 var _drag_velocity := 0.0
@@ -39,11 +42,15 @@ var _snap := false
 var _tween: Tween
 var _screen_to_world_factor: float
 
+var _pool: Array[QuadFace] = []
+var _active_children: Dictionary = {}
+
 func _ready() -> void:
 	_mask_back.pressed.connect(_on_back_pressed)
 	_mask_fore.pressed.connect(_on_fore_pressed)
 	_scroll_bar.value_changed.connect(_on_scroll_bar_value_changed)
-	_generate_children.call_deferred()
+	_initialize_pool()
+	_generate_children()
 	_update_scroll_bar()
 	_on_scroll_bar_value_changed(0)
 	_calculate_screen_to_world_factor()
@@ -106,19 +113,49 @@ func _is_mouse_inside_mask() -> bool:
 	_ray.force_raycast_update()
 	return _ray.is_colliding() and _ray.get_collider() == _mask_area
 
+func _initialize_pool() -> void:
+	if _child_scene == null:
+		print_debug("CoverFlow: No child scene to instantiate.")
+		return
+	for i in range(POOL_SIZE):
+		var child := _child_scene.instantiate() as QuadFace
+		_mask_children.add_child(child)
+		child.visible = false
+		_pool.append(child)
+
+func _get_child_from_pool(index: int) -> QuadFace:
+	var child: QuadFace
+	if not _pool.is_empty():
+		child = _pool.pop_back()
+	else:
+		print_debug("Pool is empty, creating new instance")
+		child = _child_scene.instantiate() as QuadFace
+		_mask_children.add_child(child)
+
+	child.visible = true
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.connect(_on_Child_gui_input.bind(child))
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelTop").text = str(index)
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelMiddle").text = str(index)
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelBottom").text = str(index)
+	return child
+
+func _return_child_to_pool(child: QuadFace) -> void:
+	child.visible = false
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.disconnect(_on_Child_gui_input.bind(child))
+	_pool.append(child)
+
 func _generate_children() -> void:
 	if _child_scene == null:
 		print_debug("CoverFlow: No child scene to instantiate.")
 		return
-	for i in range(_child_count):
-		var child := _child_scene.instantiate() as QuadFace
-		_mask_children.add_child(child)
-		child._look_at_target = _camera.global_position
-		_set_child_position(child, i, _scroll_bar.value)
-		child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.connect(_on_Child_gui_input.bind(child))
-		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelTop").text = str(i)
-		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelMiddle").text = str(i)
-		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelBottom").text = str(i)
+	for i in range(-VISIBLE_RANGE, VISIBLE_RANGE + 1):
+		var index := i + roundi(_current)
+		if index >= 0 and index < _child_count:
+			var child := _get_child_from_pool(index)
+			if child:
+				child._look_at_target = _camera.global_position
+				_set_child_position(child, index, _current)
+				_active_children[index] = child
 
 func _get_child_position(index: int, value: float) -> Vector3:
 	return Vector3((index - value) * OFFSET_X, 0, OFFSET_Z + (-abs(index - value) * OFFSET_DEPTH))
@@ -167,8 +204,21 @@ func _ease_to(target: int) -> void:
 
 func _drag_to(value: float) -> void:
 	_current = value
-	for i in range(_mask_children.get_child_count()):
-		_set_child_position(_mask_children.get_child(i), i, _current)
+	var center := roundi(_current)
+	var visible_start := center - VISIBLE_RANGE
+	var visible_end := center + VISIBLE_RANGE
+	for index in _active_children.keys():
+		if index < visible_start or index > visible_end:
+			_return_child_to_pool(_active_children[index])
+			_active_children.erase(index)
+	for i in range(visible_start, visible_end + 1):
+		if i >= 0 and i < _child_count and not _active_children.has(i):
+			var child := _get_child_from_pool(i)
+			if child:
+				child._look_at_target = _camera.global_position
+				_active_children[i] = child
+	for index in _active_children:
+		_set_child_position(_active_children[index], index, _current)
 	_update_scroll_status(_current)
 
 func _update_scroll_status(value: float) -> void:

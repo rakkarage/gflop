@@ -16,15 +16,12 @@ const RAY_LENGTH := 100.0
 const OFFSET_X := 0.22
 const OFFSET_Z := 0.333
 const OFFSET_DEPTH := 0.0333
-
 const TWEEN_TIME := 0.333
-
 const MOMENTUM_FACTOR := -100.0
 const MOMENTUM_FRICTION := 0.9
 const MOMENTUM_THRESHOLD := 0.001
-
 const MOVE_TIME_THRESHOLD := 100
-
+const CLICK_THRESHOLD := 1
 const VISIBLE_RANGE := 10
 
 var _current := 0.0
@@ -36,8 +33,8 @@ var _momentum := 0.0
 var _snap := false
 var _tween: Tween
 var _screen_to_world_factor: float
-
 var _active_children: Dictionary = {}
+var _mouse_down_position: Vector2
 
 func _ready() -> void:
 	_mask_back.pressed.connect(_on_back_pressed)
@@ -148,13 +145,19 @@ func _on_fore_pressed() -> void:
 	_ease_to(roundi(_current) + 1)
 
 func _on_Child_gui_input(event: InputEvent, child: Node) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		Audio.click()
-		child._face_camera = false
-		var tween := create_tween()
-		tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SPRING)
-		tween.tween_property(child, "global_rotation:y", child.global_rotation.y + deg_to_rad(360), TWEEN_TIME)
-		tween.tween_callback(func() -> void: child._face_camera = true)
+	if event is InputEventMouseButton:
+		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			_mouse_down_position = event.position
+		elif not event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			var distance = _mouse_down_position.distance_to(event.position)
+			print(distance)
+			if distance < CLICK_THRESHOLD:
+				Audio.click()
+				child._face_camera = false
+				var tween := create_tween()
+				tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SPRING)
+				tween.tween_property(child, "global_rotation:y", child.global_rotation.y + deg_to_rad(360), TWEEN_TIME)
+				tween.tween_callback(func() -> void: child._face_camera = true)
 
 func _ease_to(target: int) -> void:
 	if _tween != null:

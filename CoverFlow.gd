@@ -39,10 +39,11 @@ var _mouse_down_position: Vector2
 func _ready() -> void:
 	_mask_back.pressed.connect(_on_back_pressed)
 	_mask_fore.pressed.connect(_on_fore_pressed)
-	_scroll_bar.value_changed.connect(_on_scroll_bar_value_changed)
+	_scroll_bar.value_changed.connect(_drag_to)
+	_scroll_bar.max_value = _child_count
+	_scroll_bar.page = 1
 	_generate_children()
-	_update_scroll_bar()
-	_on_scroll_bar_value_changed(0)
+	_drag_to(0)
 	var distance_to_coverflow := _camera.global_transform.origin.distance_to(_mask.global_transform.origin)
 	var viewport_world_width := 2.0 * distance_to_coverflow * tan(deg_to_rad(_camera.fov * 0.5))
 	_screen_to_world_factor = viewport_world_width / (get_viewport().size.x * OFFSET_X)
@@ -52,7 +53,7 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				_dragging = true
-				_last_mouse_position = event.position
+				_last_mouse_position = event.global_position
 				_last_move_time = Time.get_ticks_msec()
 				_momentum = 0.0
 			else:
@@ -63,13 +64,13 @@ func _input(event: InputEvent) -> void:
 				_momentum = _drag_velocity * MOMENTUM_FACTOR
 	elif event is InputEventMouseMotion:
 		if _dragging:
-			var delta: Vector2 = event.position - _last_mouse_position
+			var delta: Vector2 = event.global_position - _last_mouse_position
 			if abs(delta.x) < MOMENTUM_THRESHOLD:
 				_drag_velocity = 0.0
 			else:
 				_drag_velocity = delta.x * _screen_to_world_factor
 			_drag_to(_current - _drag_velocity)
-			_last_mouse_position = event.position
+			_last_mouse_position = event.global_position
 			_last_move_time = Time.get_ticks_msec()
 		for i in range(_pool.get_child_count()):
 			var child := _pool.get_child(i) as QuadFace
@@ -102,13 +103,11 @@ func _is_mouse_inside_mask() -> bool:
 
 func enter(index: int) -> Node:
 	var child := _pool.enter()
-	if child:
-		child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.connect(_on_Child_gui_input.bind(child))
-		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelTop").text = "%02x" % index
-		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelMiddle").text = "%02x" % index
-		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelBottom").text = "%02x" % index
-		return child
-	return null
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.connect(_on_Child_gui_input.bind(child))
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelTop").text = "%02x" % index
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelMiddle").text = "%02x" % index
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelBottom").text = "%02x" % index
+	return child
 
 func exit(node: Node) -> void:
 	node.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.disconnect(_on_Child_gui_input.bind(node))
@@ -119,20 +118,11 @@ func _generate_children() -> void:
 		var index := i + roundi(_current)
 		if index >= 0 and index < _child_count:
 			var child := enter(index)
-			if child:
-				child._look_at_target = _camera.global_position
-				_set_child_position(child, index, _current)
-				_active_children[index] = child
+			child.target = _camera.global_position
+			_active_children[index] = child
 
 func _set_child_position(child: QuadFace, index: int, value: float) -> void:
 	child.global_position = Vector3((index - value) * OFFSET_X, 0, OFFSET_Z + (-abs(index - value) * OFFSET_DEPTH))
-
-func _update_scroll_bar() -> void:
-	_scroll_bar.max_value = _child_count
-	_scroll_bar.page = 1
-
-func _on_scroll_bar_value_changed(value: float) -> void:
-	_drag_to(value)
 
 func _on_back_pressed() -> void:
 	Audio.click()
@@ -147,17 +137,16 @@ func _on_fore_pressed() -> void:
 func _on_Child_gui_input(event: InputEvent, child: Node) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			_mouse_down_position = event.position
+			_mouse_down_position = event.global_position
 		elif not event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			var distance = _mouse_down_position.distance_to(event.position)
-			print(distance)
+			var distance = _mouse_down_position.distance_to(event.global_position)
 			if distance < CLICK_THRESHOLD:
 				Audio.click()
-				child._face_camera = false
+				child.face = false
 				var tween := create_tween()
 				tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SPRING)
 				tween.tween_property(child, "global_rotation:y", child.global_rotation.y + deg_to_rad(360), TWEEN_TIME)
-				tween.tween_callback(func() -> void: child._face_camera = true)
+				tween.tween_callback(func() -> void: child.face = true)
 
 func _ease_to(target: int) -> void:
 	if _tween != null:
@@ -180,9 +169,8 @@ func _drag_to(value: float) -> void:
 	for i in range(visible_start, visible_end + 1):
 		if i >= 0 and i < _child_count and not _active_children.has(i):
 			var child := enter(i)
-			if child:
-				child._look_at_target = _camera.global_position
-				_active_children[i] = child
+			child.target = _camera.global_position
+			_active_children[i] = child
 	# update positions
 	for i in _active_children:
 		_set_child_position(_active_children[i], i, _current)

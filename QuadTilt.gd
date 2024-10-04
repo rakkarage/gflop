@@ -1,3 +1,4 @@
+@tool
 extends QuadInput
 
 @export var _range: float = 0.022

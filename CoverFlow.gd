@@ -32,9 +32,9 @@ var _last_move_time := 0.0
 var _momentum := 0.0
 var _snap := false
 var _tween: Tween
-var _screen_to_world_factor: float
+var _drag_factor: float
 var _active_children: Dictionary = {}
-var _mouse_down_position: Vector2
+var _click_position: Vector2
 
 func _ready() -> void:
 	_mask_back.pressed.connect(_on_back_pressed)
@@ -44,9 +44,9 @@ func _ready() -> void:
 	_scroll_bar.page = 1
 	_generate_children()
 	_drag_to(0)
-	var distance_to_coverflow := _camera.global_transform.origin.distance_to(_mask.global_transform.origin)
-	var viewport_world_width := 2.0 * distance_to_coverflow * tan(deg_to_rad(_camera.fov * 0.5))
-	_screen_to_world_factor = viewport_world_width / (get_viewport().size.x * OFFSET_X)
+	var distance := _camera.global_transform.origin.distance_to(_mask.global_transform.origin)
+	var width := 2.0 * distance * tan(deg_to_rad(_camera.fov * 0.5))
+	_drag_factor = width / (get_viewport().size.x * OFFSET_X)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -68,13 +68,13 @@ func _input(event: InputEvent) -> void:
 			if abs(delta.x) < MOMENTUM_THRESHOLD:
 				_drag_velocity = 0.0
 			else:
-				_drag_velocity = delta.x * _screen_to_world_factor
+				_drag_velocity = delta.x * _drag_factor
 			_drag_to(_current - _drag_velocity)
 			_last_mouse_position = event.global_position
 			_last_move_time = Time.get_ticks_msec()
 		for i in range(_pool.get_child_count()):
 			var child := _pool.get_child(i) as QuadFace
-			child._is_mouse_inside_mask = _is_mouse_inside_mask()
+			child.is_mouse_inside_mask = _is_mouse_inside_mask()
 
 func _process(delta: float) -> void:
 	for child in _pool.get_children():
@@ -137,9 +137,9 @@ func _on_fore_pressed() -> void:
 func _on_Child_gui_input(event: InputEvent, child: Node) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			_mouse_down_position = event.global_position
+			_click_position = event.global_position
 		elif not event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			var distance = _mouse_down_position.distance_to(event.global_position)
+			var distance = _click_position.distance_to(event.global_position)
 			if distance < CLICK_THRESHOLD:
 				Audio.click()
 				child.face = false

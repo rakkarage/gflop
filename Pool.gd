@@ -16,6 +16,7 @@ func _ready() -> void:
 	for i in range(_size):
 		var child := _scene.instantiate()
 		add_child(child)
+		child.name = str(i)
 		child.visible = false
 		_pool.append(child)
 

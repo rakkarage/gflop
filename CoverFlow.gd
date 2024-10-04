@@ -104,9 +104,9 @@ func enter(index: int) -> Node:
 	var child := _pool.enter()
 	if child:
 		child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.connect(_on_Child_gui_input.bind(child))
-		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelTop").text = str(index)
-		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelMiddle").text = str(index)
-		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelBottom").text = str(index)
+		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelTop").text = "%02x" % index
+		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelMiddle").text = "%02x" % index
+		child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelBottom").text = "%02x" % index
 		return child
 	return null
 

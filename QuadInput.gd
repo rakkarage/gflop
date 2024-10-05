@@ -7,19 +7,14 @@ class_name QuadInput extends MeshInstance3D
 @export var _use_input_mask := false
 
 var is_mouse_inside_mask := false
-var _is_mouse_inside := false
 var _last_event_pos2D := Vector2()
 var _last_event_time := -1.0
 
 func _ready() -> void:
 	_area.input_event.connect(_on_input_event)
-	_area.mouse_entered.connect(func() -> void: _is_mouse_inside = true)
-	_area.mouse_exited.connect(func() -> void: _is_mouse_inside = false)
 
 func _on_input_event(_camera: Camera3D, event: InputEvent, event_position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
 	if _use_input_mask and not is_mouse_inside_mask:
-		return
-	if not _is_mouse_inside:
 		return
 
 	var mesh_size: Vector2 = mesh.size

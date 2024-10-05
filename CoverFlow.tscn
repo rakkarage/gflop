@@ -46,6 +46,7 @@ size = Vector2i(512, 316)
 [node name="Interface" parent="Mask/SubViewport" instance=ExtResource("3_ihb8t")]
 
 [node name="Area3D" type="Area3D" parent="Mask"]
+input_capture_on_drag = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Mask/Area3D"]
 shape = SubResource("BoxShape3D_ieo0t")

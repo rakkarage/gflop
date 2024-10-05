@@ -53,4 +53,4 @@ shape = SubResource("BoxShape3D_ieo0t")
 
 [node name="Pool" type="Node3D" parent="Mask"]
 script = ExtResource("5_7s2rn")
-_scene = ExtResource("2_p48yj")
+scene = ExtResource("2_p48yj")

@@ -10,7 +10,7 @@ extends Node3D
 @onready var _mask_area: Area3D = $Mask/Area3D
 @onready var _pool: Pool = $Mask/Pool
 
-@export var _child_count := 5000
+@export var _child_count := 5000000
 
 const RAY_LENGTH := 100.0
 const OFFSET_X := 0.22

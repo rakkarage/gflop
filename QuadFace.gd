@@ -9,4 +9,4 @@ var face := true
 func _process(_delta: float) -> void:
 	if face:
 		var direction := (target - global_position).normalized()
-		rotation = rotation.slerp(Vector3(asin(-direction.y), atan2(direction.x, direction.z), 0), _speed * _delta)
+		rotation.y = lerp_angle(rotation.y, atan2(direction.x, direction.z), _speed * _delta)

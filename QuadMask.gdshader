@@ -1,4 +1,5 @@
 shader_type spatial;
+render_mode depth_draw_never;
 
 uniform sampler2D texture: source_color;
 uniform mat4 mask_transform = mat4(1.0);

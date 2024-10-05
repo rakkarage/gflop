@@ -12,7 +12,7 @@ viewport_path = NodePath("SubViewport")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0eajx"]
 resource_local_to_scene = true
-render_priority = 0
+render_priority = 1
 shader = ExtResource("1_oid0q")
 shader_parameter/mask_transform = Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
 shader_parameter/mask_size = Vector2(2, 1)

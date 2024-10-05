@@ -1,8 +1,8 @@
 @tool
 extends QuadInput
 
-@export var _range: float = 0.022
-@export var _speed: float = 5.0
+@export var tilt_range: float = 0.022
+@export var tilt_speed: float = 5.0
 
 var _initial: Quaternion
 var _tilt := Vector2.ZERO
@@ -20,10 +20,10 @@ func _process(delta: float) -> void:
 	normalized.x = clamp(normalized.x, -1.0, 1.0)
 	normalized.y = clamp(normalized.y, -1.0, 1.0)
 
-	_tilt = _tilt.lerp(normalized, delta * _speed)
+	_tilt = _tilt.lerp(normalized, delta * tilt_speed)
 
 	var yaw := Quaternion(Vector3.UP, _tilt.x).normalized()
 	var pitch := Quaternion(Vector3.RIGHT, _tilt.y).normalized()
 	var tilt_rotation := (yaw * pitch).normalized()
 
-	global_transform.basis = Basis(_initial.slerp(tilt_rotation, _range).normalized())
+	global_transform.basis = Basis(_initial.slerp(tilt_rotation, tilt_range).normalized())

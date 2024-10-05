@@ -10,7 +10,7 @@ extends Node3D
 @onready var _mask_area: Area3D = $Mask/Area3D
 @onready var _pool: Pool = $Mask/Pool
 
-@export var _child_count := 5000000
+@export var child_count := 5000000
 
 const RAY_LENGTH := 100.0
 const OFFSET_X := 0.22
@@ -40,7 +40,7 @@ func _ready() -> void:
 	_mask_back.pressed.connect(_on_back_pressed)
 	_mask_fore.pressed.connect(_on_fore_pressed)
 	_scroll_bar.value_changed.connect(_drag_to)
-	_scroll_bar.max_value = _child_count
+	_scroll_bar.max_value = child_count
 	_scroll_bar.page = 1
 	_generate_children()
 	_drag_to(0)
@@ -90,7 +90,7 @@ func _process(delta: float) -> void:
 			if _snap:
 				_snap = false
 				_momentum = 0.0
-				_ease_to(clamp(roundi(_current), 0, _child_count - 1))
+				_ease_to(clamp(roundi(_current), 0, child_count - 1))
 	else:
 		if abs(_drag_velocity) > MOMENTUM_THRESHOLD:
 			_snap = true
@@ -116,7 +116,7 @@ func exit(node: Node) -> void:
 func _generate_children() -> void:
 	for i in range(-VISIBLE_RANGE, VISIBLE_RANGE + 1):
 		var index := i + roundi(_current)
-		if index >= 0 and index < _child_count:
+		if index >= 0 and index < child_count:
 			var child := enter(index)
 			child.target = _camera.global_position
 			_active_children[index] = child
@@ -167,7 +167,7 @@ func _drag_to(value: float) -> void:
 			_active_children.erase(i)
 	# pool in
 	for i in range(visible_start, visible_end + 1):
-		if i >= 0 and i < _child_count and not _active_children.has(i):
+		if i >= 0 and i < child_count and not _active_children.has(i):
 			var child := enter(i)
 			child.target = _camera.global_position
 			_active_children[i] = child
@@ -177,4 +177,4 @@ func _drag_to(value: float) -> void:
 	# update scroll bar and buttons
 	_scroll_bar.set_value_no_signal(value)
 	_mask_back.disabled = value <= 0
-	_mask_fore.disabled = value >= _child_count - 1
+	_mask_fore.disabled = value >= child_count - 1

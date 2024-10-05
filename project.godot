@@ -11,12 +11,12 @@ config_version=5
 [application]
 
 config/name="gflop"
+config/tags=PackedStringArray("2d", "3d", "demo", "gui", "input")
 run/main_scene="res://Demo.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 boot_splash/image="res://addons/Intro/Henry.png"
 boot_splash/fullsize=false
 config/icon="res://icon.png"
-config/tags=PackedStringArray("2d", "3d", "demo", "gui")
 
 [autoload]
 

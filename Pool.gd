@@ -1,20 +1,20 @@
 @tool
 class_name Pool extends Node
 
-@export var _size := 21
-@export var _scene: PackedScene:
+@export var size := 21
+@export var scene: PackedScene:
 	set(value):
-		_scene = value
+		scene = value
 		update_configuration_warnings()
 
 var _pool: Array[Node] = []
 
 func _ready() -> void:
-	if _scene == null:
-		print_debug("Pool: No scene to instantiate.")
+	if scene == null:
+		push_warning("Pool: No scene to instantiate.")
 		return
-	for i in range(_size):
-		var child := _scene.instantiate()
+	for i in range(size):
+		var child := scene.instantiate()
 		add_child(child)
 		child.name = str(i)
 		child.visible = false
@@ -25,8 +25,8 @@ func enter() -> Node:
 	if not _pool.is_empty():
 		child = _pool.pop_back()
 	else:
-		print_debug("Pool: Empty, creating new instance.")
-		child = _scene.instantiate()
+		push_warning("Pool: Empty, creating new instance.")
+		child = scene.instantiate()
 		add_child(child)
 	child.visible = true
 	return child
@@ -36,7 +36,4 @@ func exit(child: Node) -> void:
 	_pool.append(child)
 
 func _get_configuration_warnings() -> PackedStringArray:
-	if _scene == null:
-		return ["No scene to instantiate."]
-	else:
-		return []
+	return ["No scene to instantiate."] if not scene else []

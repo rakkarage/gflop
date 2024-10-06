@@ -13,7 +13,7 @@ func _ready() -> void:
 	if scene == null:
 		push_warning("Pool: No scene to instantiate.")
 		return
-	for i in range(size):
+	for i in size:
 		var child := scene.instantiate()
 		add_child(child)
 		child.name = str(i)

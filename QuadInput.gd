@@ -14,9 +14,8 @@ func _ready() -> void:
 	_area.input_event.connect(_on_input_event)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton or event is InputEventMouseMotion or event is InputEventScreenDrag or event is InputEventScreenTouch:
-		return
-	_viewport.push_input(event)
+	if event is InputEventKey:
+		_viewport.push_input(event)
 
 func _on_input_event(_camera: Camera3D, event: InputEvent, event_position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
 	if use_input_mask and not is_mouse_inside_mask:

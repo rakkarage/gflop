@@ -20,7 +20,7 @@ const TWEEN_TIME := 0.333
 const MOMENTUM_FACTOR := -100.0
 const MOMENTUM_FRICTION := 0.9
 const MOMENTUM_THRESHOLD := 0.001
-const MOVE_TIME_THRESHOLD := 100
+const MOVE_TIME_THRESHOLD := 0.1
 const CLICK_THRESHOLD := 1
 const VISIBLE_RANGE := 10
 
@@ -54,11 +54,11 @@ func _input(event: InputEvent) -> void:
 			if event.pressed:
 				_dragging = true
 				_last_mouse_position = event.global_position
-				_last_move_time = Time.get_ticks_msec()
+				_last_move_time = Time.get_ticks_msec() / 1000.0
 				_momentum = 0.0
 			else:
 				_dragging = false
-				var current_time := Time.get_ticks_msec()
+				var current_time := Time.get_ticks_msec() / 1000.0
 				if current_time - _last_move_time > MOVE_TIME_THRESHOLD:
 					_drag_velocity = 0.0
 				_momentum = _drag_velocity * MOMENTUM_FACTOR
@@ -71,9 +71,8 @@ func _input(event: InputEvent) -> void:
 				_drag_velocity = delta.x * _drag_factor
 			_drag_to(_current - _drag_velocity)
 			_last_mouse_position = event.global_position
-			_last_move_time = Time.get_ticks_msec()
-		for i in range(_pool.get_child_count()):
-			var child := _pool.get_child(i) as QuadFace
+			_last_move_time = Time.get_ticks_msec() / 1000.0
+		for child in _pool.get_children():
 			child.is_mouse_inside_mask = _is_mouse_inside_mask()
 
 func _process(delta: float) -> void:
@@ -101,7 +100,7 @@ func _is_mouse_inside_mask() -> bool:
 	_ray.force_raycast_update()
 	return _ray.is_colliding() and _ray.get_collider() == _mask_area
 
-# get node from pool and add it to the active children
+# get node from pool and add it to active children
 func enter(index: int) -> void:
 	var child := _pool.enter()
 	child.target = _camera.global_position

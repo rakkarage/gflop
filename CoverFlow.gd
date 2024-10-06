@@ -124,14 +124,14 @@ func _generate_children() -> void:
 			enter(index)
 
 func _on_back_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT or (event is InputEventKey && (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE)):
+	if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT) or (event is InputEventKey and (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE)):
 		if event.is_pressed():
 			Audio.click()
 			_momentum = 0
 			_ease_to(roundi(_current) - 1)
 
 func _on_fore_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT or (event is InputEventKey && (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE)):
+	if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT) or (event is InputEventKey and (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE)):
 		if event.is_pressed():
 			Audio.click()
 			_momentum = 0

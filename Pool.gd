@@ -22,12 +22,12 @@ func _ready() -> void:
 
 func enter() -> Node:
 	var child: Node
-	if not _pool.is_empty():
-		child = _pool.pop_back()
-	else:
+	if _pool.is_empty():
 		push_warning("Pool: Empty, creating new instance.")
 		child = scene.instantiate()
 		add_child(child)
+	else:
+		child = _pool.pop_back()
 	child.visible = true
 	return child
 

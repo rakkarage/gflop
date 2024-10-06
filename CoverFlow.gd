@@ -37,8 +37,8 @@ var _active_children: Dictionary = {}
 var _click_position := Vector2.ZERO
 
 func _ready() -> void:
-	_mask_back.pressed.connect(_on_back_pressed)
-	_mask_fore.pressed.connect(_on_fore_pressed)
+	_mask_back.gui_input.connect(_on_back_input)
+	_mask_fore.gui_input.connect(_on_fore_input)
 	_scroll_bar.value_changed.connect(_drag_to)
 	_scroll_bar.max_value = child_count
 	_scroll_bar.page = 1
@@ -101,35 +101,42 @@ func _is_mouse_inside_mask() -> bool:
 	_ray.force_raycast_update()
 	return _ray.is_colliding() and _ray.get_collider() == _mask_area
 
-func enter(index: int) -> Node:
+# get node from pool and add it to the active children
+func enter(index: int) -> void:
 	var child := _pool.enter()
 	child.target = _camera.global_position
 	child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.connect(_on_Child_gui_input.bind(child))
 	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelTop").text = "%02x" % index
 	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelMiddle").text = "%02x" % index
 	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelBottom").text = "%02x" % index
-	return child
+	_active_children[index] = child
 
-func exit(node: Node) -> void:
-	node.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.disconnect(_on_Child_gui_input.bind(node))
-	_pool.exit(node)
+# return node to pool and remove it from active children
+func exit(index: int) -> void:
+	var child: Node = _active_children[index]
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.disconnect(_on_Child_gui_input.bind(child))
+	_active_children.erase(index)
+	_pool.exit(child)
 
 func _generate_children() -> void:
 	for i in range(-VISIBLE_RANGE, VISIBLE_RANGE + 1):
 		var index := i + roundi(_current)
 		if index >= 0 and index < child_count:
-			var child := enter(index)
-			_active_children[index] = child
+			enter(index)
 
-func _on_back_pressed() -> void:
-	Audio.click()
-	_momentum = 0
-	_ease_to(roundi(_current) - 1)
+func _on_back_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT or (event is InputEventKey && (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE)):
+		if event.is_pressed():
+			Audio.click()
+			_momentum = 0
+			_ease_to(roundi(_current) - 1)
 
-func _on_fore_pressed() -> void:
-	Audio.click()
-	_momentum = 0
-	_ease_to(roundi(_current) + 1)
+func _on_fore_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT or (event is InputEventKey && (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE)):
+		if event.is_pressed():
+			Audio.click()
+			_momentum = 0
+			_ease_to(roundi(_current) + 1)
 
 func _on_Child_gui_input(event: InputEvent, child: Node) -> void:
 	if event is InputEventMouseButton:
@@ -160,13 +167,11 @@ func _drag_to(target: float) -> void:
 	# pool out
 	for i in _active_children.keys():
 		if i < visible_start or i > visible_end:
-			exit(_active_children[i])
-			_active_children.erase(i)
+			exit(i)
 	# pool in
 	for i in range(visible_start, visible_end + 1):
 		if i >= 0 and i < child_count and not _active_children.has(i):
-			var child := enter(i)
-			_active_children[i] = child
+			enter(i)
 	# update positions
 	for i in _active_children:
 		_active_children[i].global_position = Vector3((i - _current) * OFFSET_X, 0, OFFSET_Z + -abs(i - _current) * OFFSET_DEPTH)

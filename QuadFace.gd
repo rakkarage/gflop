@@ -1,10 +1,10 @@
 @tool
 class_name QuadFace extends QuadInput
 
-const SPEED: float = 5.0
+const SPEED := 5.0
 
-var target: Vector3 = Vector3.ZERO
 var face := true
+var target := Vector3.ZERO
 
 func _process(delta: float) -> void:
 	if face:

@@ -1,15 +1,11 @@
 @tool
 extends QuadInput
 
-const RANGE: float = 0.022
-const SPEED: float = 5.0
+const RANGE := 0.022
+const SPEED := 5.0
 
-var _initial: Quaternion
+var _initial := Quaternion.IDENTITY
 var _tilt := Vector2.ZERO
-
-func _ready() -> void:
-	super._ready()
-	_initial = global_transform.basis.get_rotation_quaternion()
 
 func _process(delta: float) -> void:
 	var viewport := get_viewport()

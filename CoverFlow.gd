@@ -104,7 +104,7 @@ func _is_mouse_inside_mask() -> bool:
 func enter(index: int) -> void:
 	var child := _pool.enter()
 	child.target = _camera.global_position
-	child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.connect(_on_Child_gui_input.bind(child))
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.connect(_on_child_gui_input.bind(child))
 	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelTop").text = "%02x" % index
 	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelMiddle").text = "%02x" % index
 	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelBottom").text = "%02x" % index
@@ -113,7 +113,7 @@ func enter(index: int) -> void:
 # return node to pool and remove it from active children
 func exit(index: int) -> void:
 	var child: Node = _active_children[index]
-	child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.disconnect(_on_Child_gui_input.bind(child))
+	child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.disconnect(_on_child_gui_input.bind(child))
 	_active_children.erase(index)
 	_pool.exit(child)
 
@@ -137,7 +137,7 @@ func _on_fore_input(event: InputEvent) -> void:
 			_momentum = 0
 			_ease_to(roundi(_current) + 1)
 
-func _on_Child_gui_input(event: InputEvent, child: Node) -> void:
+func _on_child_gui_input(event: InputEvent, child: Node) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			_click_position = event.global_position

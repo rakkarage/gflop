@@ -7,8 +7,8 @@ class_name QuadInput extends MeshInstance3D
 @export var use_input_mask := false
 
 var is_mouse_inside_mask := false
-var _last_event_pos2D := Vector2()
-var _last_event_time := -1.0
+var _last_event_pos2D := Vector2.ZERO
+var _last_event_time := 0.0
 
 func _ready() -> void:
 	_area.input_event.connect(_on_input_event)

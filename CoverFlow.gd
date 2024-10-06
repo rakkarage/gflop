@@ -27,14 +27,14 @@ const VISIBLE_RANGE := 10
 var _current := 0.0
 var _dragging := false
 var _drag_velocity := 0.0
-var _last_mouse_position := Vector2()
+var _last_mouse_position := Vector2.ZERO
 var _last_move_time := 0.0
 var _momentum := 0.0
 var _snap := false
 var _tween: Tween
 var _drag_factor: float
 var _active_children: Dictionary = {}
-var _click_position: Vector2
+var _click_position := Vector2.ZERO
 
 func _ready() -> void:
 	_mask_back.pressed.connect(_on_back_pressed)
@@ -44,7 +44,7 @@ func _ready() -> void:
 	_scroll_bar.page = 1
 	_generate_children()
 	_drag_to(0)
-	var distance := _camera.global_transform.origin.distance_to(_mask.global_transform.origin)
+	var distance := _camera.global_position.distance_to(_mask.global_position)
 	var width := 2.0 * distance * tan(deg_to_rad(_camera.fov * 0.5))
 	_drag_factor = width / (get_viewport().size.x * OFFSET_X)
 
@@ -82,7 +82,10 @@ func _process(delta: float) -> void:
 		if mat:
 			mat.set_shader_parameter("mask_transform", _mask.global_transform)
 			mat.set_shader_parameter("mask_size", _mask.mesh.size)
-	if not _dragging:
+	if _dragging:
+		if abs(_drag_velocity) > MOMENTUM_THRESHOLD:
+			_snap = true
+	else:
 		if abs(_momentum) > MOMENTUM_THRESHOLD:
 			_drag_to(_current + _momentum * delta)
 			_momentum *= MOMENTUM_FRICTION
@@ -91,9 +94,6 @@ func _process(delta: float) -> void:
 				_snap = false
 				_momentum = 0.0
 				_ease_to(clamp(roundi(_current), 0, child_count - 1))
-	else:
-		if abs(_drag_velocity) > MOMENTUM_THRESHOLD:
-			_snap = true
 
 # disables mouse input when the mouse is outside the mask, so only the visible parts of controls are interactive
 func _is_mouse_inside_mask() -> bool:
@@ -103,6 +103,7 @@ func _is_mouse_inside_mask() -> bool:
 
 func enter(index: int) -> Node:
 	var child := _pool.enter()
+	child.target = _camera.global_position
 	child.get_node("SubViewport/Interface/Panel/Margin/Panel").gui_input.connect(_on_Child_gui_input.bind(child))
 	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelTop").text = "%02x" % index
 	child.get_node("SubViewport/Interface/Panel/Margin/Panel/LabelMiddle").text = "%02x" % index
@@ -118,11 +119,7 @@ func _generate_children() -> void:
 		var index := i + roundi(_current)
 		if index >= 0 and index < child_count:
 			var child := enter(index)
-			child.target = _camera.global_position
 			_active_children[index] = child
-
-func _set_child_position(child: QuadFace, index: int, value: float) -> void:
-	child.global_position = Vector3((index - value) * OFFSET_X, 0, OFFSET_Z + (-abs(index - value) * OFFSET_DEPTH))
 
 func _on_back_pressed() -> void:
 	Audio.click()
@@ -155,8 +152,8 @@ func _ease_to(target: int) -> void:
 	_tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SPRING)
 	_tween.tween_method(_drag_to, _current, target, TWEEN_TIME)
 
-func _drag_to(value: float) -> void:
-	_current = value
+func _drag_to(target: float) -> void:
+	_current = target
 	var center := roundi(_current)
 	var visible_start := center - VISIBLE_RANGE
 	var visible_end := center + VISIBLE_RANGE
@@ -169,12 +166,11 @@ func _drag_to(value: float) -> void:
 	for i in range(visible_start, visible_end + 1):
 		if i >= 0 and i < child_count and not _active_children.has(i):
 			var child := enter(i)
-			child.target = _camera.global_position
 			_active_children[i] = child
 	# update positions
 	for i in _active_children:
-		_set_child_position(_active_children[i], i, _current)
+		_active_children[i].global_position = Vector3((i - _current) * OFFSET_X, 0, OFFSET_Z + -abs(i - _current) * OFFSET_DEPTH)
 	# update scroll bar and buttons
-	_scroll_bar.set_value_no_signal(value)
-	_mask_back.disabled = value <= 0
-	_mask_fore.disabled = value >= child_count - 1
+	_scroll_bar.set_value_no_signal(_current)
+	_mask_back.disabled = _current <= 0
+	_mask_fore.disabled = _current >= child_count - 1

@@ -24,7 +24,6 @@ size = Vector3(2, 1.236, 0.001)
 script = ExtResource("1_h30rm")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)

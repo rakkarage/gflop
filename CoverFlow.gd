@@ -21,7 +21,7 @@ const MOMENTUM_FACTOR := -100.0
 const MOMENTUM_FRICTION := 0.9
 const MOMENTUM_THRESHOLD := 0.001
 const MOVE_TIME_THRESHOLD := 0.1
-const CLICK_THRESHOLD := 1
+const CLICK_THRESHOLD := 1.0
 const VISIBLE_RANGE := 10
 
 var _current := 0.0
@@ -48,7 +48,7 @@ func _ready() -> void:
 	var width := 2.0 * distance * tan(deg_to_rad(_camera.fov * 0.5))
 	_drag_factor = width / (get_viewport().size.x * OFFSET_X)
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
@@ -124,6 +124,8 @@ func _generate_children() -> void:
 			enter(index)
 
 func _on_back_input(event: InputEvent) -> void:
+	if _mask_back.disabled:
+		return
 	if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT) or (event is InputEventKey and (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE)):
 		if event.is_pressed():
 			Audio.click()
@@ -131,6 +133,8 @@ func _on_back_input(event: InputEvent) -> void:
 			_ease_to(roundi(_current) - 1)
 
 func _on_fore_input(event: InputEvent) -> void:
+	if _mask_fore.disabled:
+		return
 	if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT) or (event is InputEventKey and (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE)):
 		if event.is_pressed():
 			Audio.click()

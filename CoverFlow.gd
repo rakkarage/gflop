@@ -37,8 +37,8 @@ var _active_children: Dictionary = {}
 var _click_position := Vector2.ZERO
 
 func _ready() -> void:
-	_mask_back.gui_input.connect(_on_back_input)
-	_mask_fore.gui_input.connect(_on_fore_input)
+	_mask_back.pressed.connect(_on_back_pressed)
+	_mask_fore.pressed.connect(_on_fore_pressed)
 	_scroll_bar.value_changed.connect(_drag_to)
 	_scroll_bar.max_value = child_count
 	_scroll_bar.page = 1
@@ -123,23 +123,15 @@ func _generate_children() -> void:
 		if index >= 0 and index < child_count:
 			enter(index)
 
-func _on_back_input(event: InputEvent) -> void:
-	if _mask_back.disabled:
-		return
-	if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT) or (event is InputEventKey and (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE)):
-		if event.is_pressed():
-			Audio.click()
-			_momentum = 0
-			_ease_to(roundi(_current) - 1)
+func _on_back_pressed() -> void:
+	Audio.click()
+	_momentum = 0
+	_ease_to(roundi(_current) - 1)
 
-func _on_fore_input(event: InputEvent) -> void:
-	if _mask_fore.disabled:
-		return
-	if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT) or (event is InputEventKey and (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE)):
-		if event.is_pressed():
-			Audio.click()
-			_momentum = 0
-			_ease_to(roundi(_current) + 1)
+func _on_fore_pressed() -> void:
+	Audio.click()
+	_momentum = 0
+	_ease_to(roundi(_current) + 1)
 
 func _on_child_gui_input(event: InputEvent, child: Node) -> void:
 	if event is InputEventMouseButton:

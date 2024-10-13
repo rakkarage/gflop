@@ -26,17 +26,16 @@ func _on_input_event(_camera: Camera3D, event: InputEvent, event_position: Vecto
 	var event_pos2D := Vector2(event_pos3D.x, -event_pos3D.y) / mesh_size + Vector2(0.5, 0.5)
 	event_pos2D *= Vector2(_viewport.size.x, _viewport.size.y)
 
-	var current_time := Time.get_ticks_msec() / 1000.0
-
 	event.position = event_pos2D
 	if event is InputEventMouse:
 		event.global_position = event_pos2D
 
 	if event is InputEventMouseMotion or event is InputEventScreenDrag:
 		event.relative = event_pos2D - _last_event_pos2D
+		var current_time := Time.get_ticks_msec() / 1000.0
 		var time_diff := current_time - _last_event_time
 		event.velocity = event.relative / time_diff if time_diff > 0 else Vector2.ZERO
+		_last_event_pos2D = event_pos2D
+		_last_event_time = current_time
 
-	_last_event_pos2D = event_pos2D
-	_last_event_time = current_time
 	_viewport.push_input(event)
